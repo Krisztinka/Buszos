@@ -14,10 +14,11 @@ import CoreData
 class BejelentkezettViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     var managedObjectContext: NSManagedObjectContext!
-    var longitude: Double = 0.0
     var latitude: Double = 0.0
-    var location: CLLocation?
+    var longitude: Double = 0.0
     var annotation = MKPointAnnotation()
+    
+    var location: CLLocation?
     var newPosition = CLLocationCoordinate2D()
     var coordinateData = CLLocationCoordinate2D()
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
@@ -26,27 +27,37 @@ class BejelentkezettViewController: UIViewController {
         super.viewDidLoad()
         Database.database().reference().child("coordinates").observe(.childChanged, with: { snapshot in
             print("nem jo be\n")
-            print(snapshot.value)
+            print("snapshot: \(snapshot.value)\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
-                var longitudee = dictionary["longitude"] as! Double
+                
+                //kirjzolom a regit, adom az uj coordinate-ot es animalom
+                self.mapView.addAnnotation(self.annotation)
+                let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
+                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                self.latitude = dictionary["latitude"] as! Double
+                self.longitude = dictionary["longitude"] as! Double
+                UIView.animate(withDuration: 2, animations: {
+                    
+                    //self.newPosition = CLLocationCoordinate2D(latitude: 46.749505, longitude: 23.412459)
+                    self.annotation.coordinate = CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
+                })
+                
+                /*var longitudee = dictionary["longitude"] as! Double
                 var latitudee = dictionary["latitude"] as! Double
                 print(longitudee)
                 print(latitudee)
-                self.location = CLLocation(latitude: latitudee, longitude: longitudee)
+                //self.location = CLLocation(latitude: latitudee, longitude: longitudee)
+                self.location = CLLocation(latitude: 46.749505, longitude: 23.412459)
                 
                 self.coordinateData = CLLocationCoordinate2D(latitude: latitudee, longitude: longitudee)
                 //var coordinateData = CLLocationCoordinate2D(latitude: 44.439663, longitude: 26.096306)
                 //let annotation = MKPointAnnotation()
                 //self.mapView.removeAnnotation(self.annotation)
-                self.annotation.coordinate = self.coordinateData
-                self.mapView.addAnnotation(self.annotation)
-                let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
-                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                self.annotation.coordinate = self.coordinateData*/
+                
             }
         })
-        
-        
         
         Database.database().reference().child("coordinates").child("location").observeSingleEvent(of: .value, with: { snapshot in
             print("bejott masodikba\n")
@@ -54,17 +65,17 @@ class BejelentkezettViewController: UIViewController {
                 print(dictionary)
                 var longitudee = dictionary["longitude"] as! Double
                 var latitudee = dictionary["latitude"] as! Double
-                print(longitudee)
-                print(latitudee)
-                self.location = CLLocation(latitude: latitudee, longitude: longitudee)
+                //print(longitudee)
+                //print(latitudee)
+                //self.location = CLLocation(latitude: latitudee, longitude: longitudee)
                 
                 var coordinateData = CLLocationCoordinate2D(latitude: latitudee, longitude: longitudee)
                 //var coordinateData = CLLocationCoordinate2D(latitude: 44.439663, longitude: 26.096306)
                 //let annotation = MKPointAnnotation()
                 self.annotation.coordinate = coordinateData
-                self.mapView.addAnnotation(self.annotation)
-                let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
-                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                //self.mapView.addAnnotation(self.annotation)
+                //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
+                //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
             }
         })
         
@@ -84,16 +95,25 @@ class BejelentkezettViewController: UIViewController {
         //mapView.setRegion(mapView.regionThatFits(region), animated: true)
         
         //var myLocation = CLLocation(latitude: mapView.userLocation.coordinate.latitude, longitude: mapView.userLocation.coordinate.longitude)
-        
-        self.annotation.coordinate = CLLocationCoordinate2D(latitude: 46.768321, longitude: 23.596480)
-        self.mapView.addAnnotation(self.annotation)
-        let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
-        mapView.setRegion(mapView.regionThatFits(region), animated: true)
-        UIView.animate(withDuration: 2, animations: {
+        var latitude = 46.768321
+        var longitude = 23.596480
+        var i = 10
+        while i > 0 {
+            self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            self.mapView.addAnnotation(self.annotation)
+            let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
+            mapView.setRegion(mapView.regionThatFits(region), animated: true)
+            UIView.animate(withDuration: 2, animations: {
+                
+                //self.newPosition = CLLocationCoordinate2D(latitude: 46.749505, longitude: 23.412459)
+                latitude = latitude + 0.001
+                longitude = longitude + 0.001
+                self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                i = i-1
+                print(i)
+            })
             
-            //self.newPosition = CLLocationCoordinate2D(latitude: 46.749505, longitude: 23.412459)
-            self.annotation.coordinate = CLLocationCoordinate2D(latitude: 46.749505, longitude: 23.412459)
-        })
+        }
         
         //Measuring my distance to my buddy's (in km)
         //var distance = myLocation.distance(from: location!) / 1000
