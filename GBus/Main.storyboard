@@ -100,17 +100,44 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pxh-Rs-JsA">
+                                <rect key="frame" x="224" y="28" width="80" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Show Menu">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="showMenu:" destination="dKN-7h-nJM" eventType="touchUpInside" id="05K-o3-Hda"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="MjC-QY-RDJ"/>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="xQE-Yb-kfc" id="LR5-fG-x6S"/>
+                        <segue destination="ZR6-Qc-Kka" kind="presentation" identifier="proba" id="eYv-UF-fcF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JWV-Tq-5qA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="22.5" y="1280.2816901408451"/>
+            <point key="canvasLocation" x="23" y="1318"/>
+        </scene>
+        <!--Message Launcher View Controller-->
+        <scene sceneID="gy5-ca-S0m">
+            <objects>
+                <viewController id="ZR6-Qc-Kka" customClass="MessageLauncherViewController" customModule="GBus" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3qN-hO-7UJ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="WsS-Hp-VLl"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="F9n-LW-EF5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3499" y="112"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="P9w-35-rFL">
@@ -245,7 +272,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zhp-Ot-jZ7">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zhp-Ot-jZ7">
                                 <rect key="frame" x="0.0" y="29" width="320" height="539"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </mapView>
@@ -267,6 +294,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="zhp-Ot-jZ7" id="ibS-20-ZTl"/>
+                        <segue destination="ZR6-Qc-Kka" kind="presentation" identifier="showMessageLauncher" id="cZA-LF-WHt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rwe-I1-TRX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -389,5 +417,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="fr7-il-Sju"/>
         <segue reference="uFK-8N-pRj"/>
+        <segue reference="cZA-LF-WHt"/>
     </inferredMetricsTieBreakers>
 </document>

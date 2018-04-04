@@ -19,6 +19,11 @@ class ProbaViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        /*collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)*/
 
         // Do any additional setup after loading the view.
         //locationManager.delegate = self
@@ -33,10 +38,25 @@ class ProbaViewController: UIViewController {
         
         mapView.delegate = self
         
+        /*let latitude: CLLocationDegrees = 39.048825
+        let longitude: CLLocationDegrees = -120.981227
+        
+        let regionDistance: CLLocationDistance = 1000
+        let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let regionSpan = MKCoordinateRegionMakeWithDistance(coordinates, regionDistance, regionDistance)
+        
+        let options = [MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center), MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)]
+        
+        let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "Nem tudom"
+        mapItem.openInMaps(launchOptions: options)*/
+        
+        
         //let region = MKCoordinateRegionMakeWithDistance(mapKit.userLocation.coordinate, 2000, 2000)
         //mapKit.setRegion(region, animated: true)
         
-        let sourceLocation = CLLocationCoordinate2DMake(46.768321, 23.596480)
+        /*let sourceLocation = CLLocationCoordinate2DMake(46.768321, 23.596480)
         let destinationLocation = CLLocationCoordinate2DMake(46.749505, 23.412459)
         
         let sourcePin = MKPointAnnotation()
@@ -70,9 +90,16 @@ class ProbaViewController: UIViewController {
             
             let rect = route.polyline.boundingMapRect
             self.mapView.setRegion(MKCoordinateRegionForMapRect(rect), animated: true)
-        }
+        }*/
     }
-
+    
+    @IBAction func showMenu(_ sender: UIButton) {
+        let messageViewController = MessageLauncherViewController()
+        messageViewController.modalPresentationStyle = .overCurrentContext
+        present(messageViewController, animated: true, completion: nil)
+        
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
