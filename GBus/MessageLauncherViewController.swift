@@ -12,6 +12,25 @@ class MessageLauncherViewController: UIViewController {
     let blackView = UIView()
     let whiteView = UIView()
     
+    var durationTextLabel: UILabel?
+    
+    //var delegate: MessageTimeProtocol?
+    
+    var expectedTime: Double = 0
+//    var expectedTime: Double = 0 {
+//        didSet {
+//            hulye()
+//            print("************The value of myProperty changed \(expectedTime)")
+//            print("ez: \(durationTextLabel)")
+//            durationTextLabel.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
+//            if let durationTextLabel = durationTextLabel {
+//                print("be kene jojjon mert mar LETEZIIIIIK")
+//                durationTextLabel.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
+//            }
+//        }
+//    }
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,28 +67,45 @@ class MessageLauncherViewController: UIViewController {
                                        height: self.whiteView.frame.height)
          }, completion: nil)
         
-        
+        presentLabelsButtons()
+    }
+    
+    func presentLabelsButtons() {
         let durationLabel = UILabel(frame: CGRect(x: 10, y: 10, width: 200, height: 21))
-         //durationLabel.font = UIFont(name: <#T##String#>, size: 20)
-         durationLabel.font = durationLabel.font.withSize(20)
-         durationLabel.text = "Time till station:"
-         durationLabel.backgroundColor = UIColor.blue
-         whiteView.addSubview(durationLabel)
-         
-         let durationTextLabel = UILabel(frame: CGRect(x: 100, y: 41, width: 100, height: 21))
-         durationTextLabel.text = "3 Minutes"
-         durationTextLabel.backgroundColor = UIColor.darkGray
-         whiteView.addSubview(durationTextLabel)
-         
-         let stationLabel = UILabel(frame: CGRect(x: 10, y: 72, width: 100, height: 21))
-         stationLabel.text = "To station: "
-         stationLabel.backgroundColor = UIColor.red
-         whiteView.addSubview(stationLabel)
-         
-         let stationTextLabel = UILabel(frame: CGRect(x: 110, y: 72, width: 100, height: 21))
-         stationTextLabel.text = "Napoca"
-         stationTextLabel.backgroundColor = UIColor.cyan
-         whiteView.addSubview(stationTextLabel)
+        //durationLabel.font = UIFont(name: <#T##String#>, size: 20)
+        durationLabel.font = durationLabel.font.withSize(20)
+        durationLabel.text = "Time till station:"
+        durationLabel.backgroundColor = UIColor.blue
+        whiteView.addSubview(durationLabel)
+        
+        print("MEGHIVODOOOOOTTTTTTTTTTT")
+        durationTextLabel = UILabel(frame: CGRect(x: 100, y: 41, width: 100, height: 21))
+        //durationTextLabel.text = "3 Minutes"
+        print("az expected time a messageba: \(expectedTime)")
+        durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
+        durationTextLabel!.backgroundColor = UIColor.white
+        whiteView.addSubview(durationTextLabel!)
+        
+        let stationLabel = UILabel(frame: CGRect(x: 10, y: 72, width: 100, height: 21))
+        stationLabel.text = "To station: "
+        stationLabel.backgroundColor = UIColor.red
+        whiteView.addSubview(stationLabel)
+        
+        let stationTextLabel = UILabel(frame: CGRect(x: 110, y: 72, width: 100, height: 21))
+        stationTextLabel.text = "Napoca"
+        stationTextLabel.backgroundColor = UIColor.cyan
+        whiteView.addSubview(stationTextLabel)
+        
+        //let messageButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 21))
+        let messageButton = UIButton(type: .system)
+        messageButton.frame = CGRect(x: 100, y: 100, width: 200, height: 45)
+        messageButton.setTitle("Send Message", for: .normal)
+        messageButton.backgroundColor = .white
+        messageButton.layer.borderWidth = 1
+        messageButton.layer.borderColor = UIColor.black.cgColor
+        messageButton.isEnabled = { return self.expectedTime < 3 }()
+        messageButton.addTarget(self, action: #selector(sendMessageButtonPushed), for: .touchUpInside)
+        whiteView.addSubview(messageButton)
     }
     
     @objc func handleDismiss() {
@@ -82,5 +118,24 @@ class MessageLauncherViewController: UIViewController {
         }
         dismiss(animated: true, completion: nil)
     }
+    
+    @objc func sendMessageButtonPushed() {
+        print("megnyomtam")
+        durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()) + 1)
+    }
+    
+    deinit {
+        print("MessageLauncher destructor called.")
+    }
+    
+    func proba(time: Double) {
+        print("ideert a probahooooooooooz")
+        print("hulye: \(durationTextLabel)")
+        if let durationTextLabel = durationTextLabel {
+            durationTextLabel.text = String(time)
+        }
+        
+    }
 
 }
+

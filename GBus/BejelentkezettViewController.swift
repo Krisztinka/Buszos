@@ -10,6 +10,11 @@ import UIKit
 import Firebase
 import MapKit
 import CoreData
+import CoreLocation
+
+protocol MessageTimeProtocol {
+    func timeChanged(time: Double)
+}
 
 class BejelentkezettViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
@@ -19,11 +24,26 @@ class BejelentkezettViewController: UIViewController {
     var annotation = MKPointAnnotation()
     //a megallok listaja
     var stations = [BusStation]()
+    var expectedTimeToStation: Double = 0
+    //var oldExpectedTimeToStation: Double = 0
+    let locationManager = CLLocationManager()   //ez azert kell hogy a sajat helyzetet is lassa a user
+    var userLocation: CLLocation?                   // -||- same
+    var destinationPlacemark: MKPlacemark?
+    var messageLauncherViewController: MessageLauncherViewController?
+    var durationTextLabel: UILabel?
     
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //messageLauncherViewController = MessageLauncherViewController()
+        
+        durationTextLabel = UILabel(frame: CGRect(x: 200, y: 100, width: 100, height: 50))
+        durationTextLabel!.text = String("23 Minutes")
+        durationTextLabel!.backgroundColor = UIColor.white
+        mapView.addSubview(durationTextLabel!)
+        
         Database.database().reference().child("coordinates").observe(.childChanged, with: { snapshot in
             print("nem jo be\n")
             print("snapshot: \(snapshot.value)\n")
@@ -68,8 +88,33 @@ class BejelentkezettViewController: UIViewController {
         //let stationNapocaN = BusStation(title: "Napoca", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 37.344893, longitude: -122.095438))
             mapView.addAnnotations(stations)
         mapView.delegate = self
+        
+        let authStatus = CLLocationManager.authorizationStatus()
+        if authStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+            return
+        }
+        
+        //megnezzuk ha megengedte hogy hasznaljuk a GPS-t vagy nem
+        if authStatus == .denied || authStatus == .restricted {
+            showLocationServicesDeniedAlert()
+            return
+        }
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.startUpdatingLocation()
     }
     
+    func showLocationServicesDeniedAlert() {
+        let alert = UIAlertController( title: "Location Services Disabled",
+                                       message: "Please enable location services for this app in Settings.",
+                                       preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default,
+                                     handler: nil)
+        present(alert, animated: true, completion: nil)
+        alert.addAction(okAction)
+    }
     
     // MARK:- Actions
     @IBAction func showUser() {
@@ -79,25 +124,28 @@ class BejelentkezettViewController: UIViewController {
         //var myLocation = CLLocation(latitude: mapView.userLocation.coordinate.latitude, longitude: mapView.userLocation.coordinate.longitude)
         var latitude = 46.768321
         var longitude = 23.596480
-        var i = 10
-        while i > 0 {
-            self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            self.mapView.addAnnotation(self.annotation)
-            //let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
             let region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 37.3542926, longitude: -122.087257), 10000, 1000)
             //let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
             mapView.setRegion(mapView.regionThatFits(region), animated: true)
-            UIView.animate(withDuration: 2, animations: {
-                
-                //self.newPosition = CLLocationCoordinate2D(latitude: 46.749505, longitude: 23.412459)
-                latitude = latitude + 0.001
-                longitude = longitude + 0.001
-                self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                i = i-1
-                print(i)
-            })
-            
-        }
+//        var i = 10
+//        while i > 0 {
+//            self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//            self.mapView.addAnnotation(self.annotation)
+//            //let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
+//            let region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 37.3542926, longitude: -122.087257), 10000, 1000)
+//            //let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
+//            mapView.setRegion(mapView.regionThatFits(region), animated: true)
+//            UIView.animate(withDuration: 2, animations: {
+//                
+//                //self.newPosition = CLLocationCoordinate2D(latitude: 46.749505, longitude: 23.412459)
+//                latitude = latitude + 0.001
+//                longitude = longitude + 0.001
+//                self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//                i = i-1
+//                print(i)
+//            })
+//            
+//        }
         
         //Measuring my distance to my buddy's (in km)
         //var distance = myLocation.distance(from: location!) / 1000
@@ -159,30 +207,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         print("rugja meg a cica")
-        //performSegue(withIdentifier: "showMessageLauncher", sender: self)
-        let messageViewController = MessageLauncherViewController()
-        messageViewController.modalPresentationStyle = .overCurrentContext
-        present(messageViewController, animated: true, completion: nil)
-        
-        //var sta = view.annotation! as! BusStation
-        //sta.mapItem().openInMaps(launchOptions: )
-        
-        //bejarjuk a megallo listat es megkeressuk melyek volt megnyomva
-        /*for station in stations {
-            if station.title == (view.annotation?.title)! {
-                print("egyforma \(station.title)")
-                //mapView.removeAnnotation(station)
-                //view.isHidden = true
-                station.subtitle = "kerleeeek"
-                //view.isHidden = false
-                //mapView.addAnnotation(station)
-                //mapView(mapView, didSelect: view)
-            }
-        }*/
-        
-        //let annotation = view.annotation!
-        //mapView.removeAnnotation(view.annotation!)
-        //annotation.subtitle = "menjel na:("
+        performSegue(withIdentifier: "showMessageLauncher", sender: self)
         
     }
     
@@ -190,7 +215,8 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("raklikkeltem")
         
-        let sourceLocation = CLLocationCoordinate2DMake(37.3542926, -122.087257)
+        //let sourceLocation = CLLocationCoordinate2DMake(37.3542926, -122.087257)
+        let sourceLocation = userLocation!.coordinate
         let destinationLocation = view.annotation?.coordinate
         //CLLocationCoordinate2DMake(46.749505, 23.412459)
         
@@ -199,11 +225,11 @@ extension BejelentkezettViewController: MKMapViewDelegate {
         self.mapView.addAnnotation(sourcePin)
         
         let sourcePlacemark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
-        let destinationPlacemark = MKPlacemark(coordinate: destinationLocation!, addressDictionary: nil)
+        destinationPlacemark = MKPlacemark(coordinate: destinationLocation!, addressDictionary: nil)
         
         let directionRequest = MKDirectionsRequest()
         directionRequest.source = MKMapItem(placemark: sourcePlacemark)
-        directionRequest.destination = MKMapItem(placemark: destinationPlacemark)
+        directionRequest.destination = MKMapItem(placemark: destinationPlacemark!)
         directionRequest.transportType = .walking
         
         let directions = MKDirections(request: directionRequest)
@@ -216,8 +242,10 @@ extension BejelentkezettViewController: MKMapViewDelegate {
             }
             
             let route = directionResponse.routes[0]
-            let eta = route.expectedTravelTime / 60.0
-            print("varhato ido: \(eta) perc")
+            let expectedTime = route.expectedTravelTime / 60.0
+            self.expectedTimeToStation = expectedTime
+            //self.oldExpectedTimeToStation = expectedTime
+            print("varhato ido: \(expectedTime) perc")
             //self.mapView.removeAnnotation(view.annotation!)
             //self.stations[1].subtitle = "Minutes: \(Int(eta.rounded()))"
             //self.mapView.addAnnotation(self.stations[1])
@@ -241,5 +269,70 @@ extension BejelentkezettViewController: MKMapViewDelegate {
         renderer.strokeColor = UIColor.blue
         //renderer.lineWidth = 1
         return renderer
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("meghivodik prepare")
+        if (segue.identifier == "showMessageLauncher") {
+            messageLauncherViewController = segue.destination as! MessageLauncherViewController
+            messageLauncherViewController?.expectedTime = expectedTimeToStation
+        }
+    }
+}
+
+extension BejelentkezettViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        userLocation = locations.last!
+        print("didUpdateLocations \(userLocation!.coordinate.latitude)")
+        
+        //ekkor ki kene szamitani ujbol az utat es el kene kuldeni a launcheron a label-nak
+        //oldExpectedTimeToStation = expectedTimeToStation
+        if let destinationPlacemark = destinationPlacemark {
+            let sourceLocation = userLocation!.coordinate
+            let sourcePlacemark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
+            let directionRequest = MKDirectionsRequest()
+            directionRequest.source = MKMapItem(placemark: sourcePlacemark)
+            directionRequest.destination = MKMapItem(placemark: destinationPlacemark)
+            directionRequest.transportType = .walking
+            
+            let directions = MKDirections(request: directionRequest)
+            directions.calculate { (response, error) in
+                guard let directionResponse = response else {
+                    if let error = error {
+                        print("error van \(error)")
+                    }
+                    return
+                }
+                
+                let route = directionResponse.routes[0]
+                let expectedTime = route.expectedTravelTime / 60.0
+                //self.expectedTimeToStation = expectedTime
+                //print("varhato ido usernek: \(expectedTime) perc")
+                print("----------expectedTimeRegi: \(Int(self.expectedTimeToStation.rounded()))")
+                print("----------expectedTimeUj \(Int(expectedTime.rounded()))")
+                //ha percben kulonbozik a ket ido, update-oljuk a messageLauncher-ba
+                if(Int(self.expectedTimeToStation.rounded()) != Int(expectedTime.rounded())) {
+                    print("********kulonboznek: \(Int(self.expectedTimeToStation.rounded())) es \(Int(expectedTime.rounded()))")
+                    self.expectedTimeToStation = expectedTime
+                    //self.messageLauncherViewController?.expectedTime = expectedTime
+                    self.durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
+                    //self.performSegue(withIdentifier: "showMessageLauncher", sender: self)
+                    //self.messageLauncherViewController.proba(time: expectedTime)
+                    print("a fasz kivan ++++++++ \(self.messageLauncherViewController?.durationTextLabel)")
+                    self.messageLauncherViewController?.durationTextLabel?.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
+                }
+                else {
+                    print("meg nem kulonboznek")
+                }
+                
+                //            self.mapView.add(route.polyline, level: .aboveRoads)
+                //            let rect = route.polyline.boundingMapRect
+                //            self.mapView.setRegion(MKCoordinateRegionForMapRect(rect), animated: true)
+            }
+        }
+
+//        let center = CLLocationCoordinate2D(latitude: userLocation!.coordinate.latitude, longitude: userLocation!.coordinate.longitude)
+//        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+
     }
 }

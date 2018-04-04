@@ -272,7 +272,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zhp-Ot-jZ7">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zhp-Ot-jZ7">
                                 <rect key="frame" x="0.0" y="29" width="320" height="539"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </mapView>
@@ -294,7 +294,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="zhp-Ot-jZ7" id="ibS-20-ZTl"/>
-                        <segue destination="ZR6-Qc-Kka" kind="presentation" identifier="showMessageLauncher" id="cZA-LF-WHt"/>
+                        <segue destination="ZR6-Qc-Kka" kind="presentation" identifier="showMessageLauncher" modalPresentationStyle="overCurrentContext" id="cZA-LF-WHt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rwe-I1-TRX" userLabel="First Responder" sceneMemberID="firstResponder"/>
