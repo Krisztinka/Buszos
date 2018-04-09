@@ -107,7 +107,8 @@ class RegisterViewController: UIViewController {
                           "surname": surname,
                           "email": email,
                           "password": password]/*,
-                          "driver": "true"]*/
+                          "driver": "true",
+                          "from": "Gilau"]*/
             //usersRef.setValue(values, withCompletionBlock: { (err, refDatabase) in
             usersRef.updateChildValues(values, withCompletionBlock: { (err, refDatabase) in
                 if err != nil {

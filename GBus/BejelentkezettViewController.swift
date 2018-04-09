@@ -22,28 +22,21 @@ class BejelentkezettViewController: UIViewController {
     var latitude: Double = 0.0
     var longitude: Double = 0.0
     var annotation = MKPointAnnotation()
-    //a megallok listaja
-    var stations = [BusStation]()
+    
+    var stations = [BusStation]()       //a megallok listaja
     var expectedTimeToStation: Double = 0
-    //var oldExpectedTimeToStation: Double = 0
+    
     let locationManager = CLLocationManager()   //ez azert kell hogy a sajat helyzetet is lassa a user
     var userLocation: CLLocation?                   // -||- same
     var destinationPlacemark: MKPlacemark?
-    var messageLauncherViewController: MessageLauncherViewController?
-    var durationTextLabel: UILabel?
+    weak var messageLauncherViewController: MessageLauncherViewController?
     
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //messageLauncherViewController = MessageLauncherViewController()
-        
-        durationTextLabel = UILabel(frame: CGRect(x: 200, y: 100, width: 100, height: 50))
-        durationTextLabel!.text = String("23 Minutes")
-        durationTextLabel!.backgroundColor = UIColor.white
-        mapView.addSubview(durationTextLabel!)
-        
+        //ez meghivodik minden egyes adatbazis rekord update-kor
         Database.database().reference().child("coordinates").observe(.childChanged, with: { snapshot in
             print("nem jo be\n")
             print("snapshot: \(snapshot.value)\n")
@@ -62,6 +55,7 @@ class BejelentkezettViewController: UIViewController {
             }
         })
         
+        //ez meghivodik az elejen
         Database.database().reference().child("coordinates").child("location").observeSingleEvent(of: .value, with: { snapshot in
             print("bejott masodikba\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
@@ -117,16 +111,16 @@ class BejelentkezettViewController: UIViewController {
     }
     
     // MARK:- Actions
-    @IBAction func showUser() {
-        //let region = MKCoordinateRegionMakeWithDistance(mapView.userLocation.coordinate, 2000, 2000)
-        //mapView.setRegion(mapView.regionThatFits(region), animated: true)
+    @IBAction func showUserPin() {
+        //var latitude = 46.768321
+        //var longitude = 23.596480
+        var region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 37.3542926, longitude: -122.087257), 10000, 10000)
+        if let userLocation = userLocation {
+            //ha van user location azt mutatja meg
+            region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 1000, 1000)
+        }
+        mapView.setRegion(mapView.regionThatFits(region), animated: true)
         
-        //var myLocation = CLLocation(latitude: mapView.userLocation.coordinate.latitude, longitude: mapView.userLocation.coordinate.longitude)
-        var latitude = 46.768321
-        var longitude = 23.596480
-            let region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 37.3542926, longitude: -122.087257), 10000, 1000)
-            //let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
-            mapView.setRegion(mapView.regionThatFits(region), animated: true)
 //        var i = 10
 //        while i > 0 {
 //            self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -147,11 +141,7 @@ class BejelentkezettViewController: UIViewController {
 //            
 //        }
         
-        //Measuring my distance to my buddy's (in km)
-        //var distance = myLocation.distance(from: location!) / 1000
-        
-        //Display the result in km
-        //print(String(format: "The distance to my buddy is %.01fkm", distance))
+
     }
 
     @IBAction func logOutClicked(_ sender: UIBarButtonItem) {
@@ -173,8 +163,8 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     
     //mapView(_:viewFor:) gets called for every annotation you add to the map
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        print("delegate")
         guard annotation is BusStation else {
+            //csak akkor customizaljuk az annotaciot ha ez egy megallo
             return nil
         }
         
@@ -244,23 +234,12 @@ extension BejelentkezettViewController: MKMapViewDelegate {
             let route = directionResponse.routes[0]
             let expectedTime = route.expectedTravelTime / 60.0
             self.expectedTimeToStation = expectedTime
-            //self.oldExpectedTimeToStation = expectedTime
             print("varhato ido: \(expectedTime) perc")
-            //self.mapView.removeAnnotation(view.annotation!)
-            //self.stations[1].subtitle = "Minutes: \(Int(eta.rounded()))"
-            //self.mapView.addAnnotation(self.stations[1])
             
             self.mapView.add(route.polyline, level: .aboveRoads)
             let rect = route.polyline.boundingMapRect
             self.mapView.setRegion(MKCoordinateRegionForMapRect(rect), animated: true)
-            //let subtitle = String(format: "Minutes: %d", round(eta))
-            //self.stations[1].subtitle = "Minutes: \(Int(eta.rounded()))"
-            //view.annotation!.subtitle = "na: \(Int(eta.rounded()))"
-            //self.mapView.removeAnnotation(view.annotation!)
-            //view.annotation! = self.stations[1]
-            //self.mapView.addAnnotation(self.stations[1])
         }
-        //mapView.addAnnotation(self.stations[1])
     }
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -274,7 +253,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("meghivodik prepare")
         if (segue.identifier == "showMessageLauncher") {
-            messageLauncherViewController = segue.destination as! MessageLauncherViewController
+            messageLauncherViewController = (segue.destination as! MessageLauncherViewController)
             messageLauncherViewController?.expectedTime = expectedTimeToStation
         }
     }
@@ -283,10 +262,9 @@ extension BejelentkezettViewController: MKMapViewDelegate {
 extension BejelentkezettViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         userLocation = locations.last!
-        print("didUpdateLocations \(userLocation!.coordinate.latitude)")
+        //print("didUpdateLocations \(userLocation!.coordinate.latitude) \(userLocation!.coordinate.longitude)")
         
-        //ekkor ki kene szamitani ujbol az utat es el kene kuldeni a launcheron a label-nak
-        //oldExpectedTimeToStation = expectedTimeToStation
+        //ekkor ki kene szamitani ujbol az utat es el kene kuldeni a launcheron a label-nak, mert itt mozog a user, es o is kell lassa a valtozast
         if let destinationPlacemark = destinationPlacemark {
             let sourceLocation = userLocation!.coordinate
             let sourcePlacemark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
@@ -299,40 +277,22 @@ extension BejelentkezettViewController: CLLocationManagerDelegate {
             directions.calculate { (response, error) in
                 guard let directionResponse = response else {
                     if let error = error {
-                        print("error van \(error)")
+                        print("Error in didUpdateLocatio: \(error)")
                     }
                     return
                 }
                 
                 let route = directionResponse.routes[0]
-                let expectedTime = route.expectedTravelTime / 60.0
-                //self.expectedTimeToStation = expectedTime
-                //print("varhato ido usernek: \(expectedTime) perc")
-                print("----------expectedTimeRegi: \(Int(self.expectedTimeToStation.rounded()))")
-                print("----------expectedTimeUj \(Int(expectedTime.rounded()))")
+                let expectedTime = route.expectedTravelTime / 60.0  //atszamoljuk percre az idot
+                //print("----------expectedTimeRegi: \(Int(self.expectedTimeToStation.rounded()))")
+                //print("----------expectedTimeUj \(Int(expectedTime.rounded()))")
+                
                 //ha percben kulonbozik a ket ido, update-oljuk a messageLauncher-ba
                 if(Int(self.expectedTimeToStation.rounded()) != Int(expectedTime.rounded())) {
-                    print("********kulonboznek: \(Int(self.expectedTimeToStation.rounded())) es \(Int(expectedTime.rounded()))")
                     self.expectedTimeToStation = expectedTime
-                    //self.messageLauncherViewController?.expectedTime = expectedTime
-                    self.durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
-                    //self.performSegue(withIdentifier: "showMessageLauncher", sender: self)
-                    //self.messageLauncherViewController.proba(time: expectedTime)
-                    print("a fasz kivan ++++++++ \(self.messageLauncherViewController?.durationTextLabel)")
-                    self.messageLauncherViewController?.durationTextLabel?.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
+                    self.messageLauncherViewController?.timeChanged(time: expectedTime)
                 }
-                else {
-                    print("meg nem kulonboznek")
-                }
-                
-                //            self.mapView.add(route.polyline, level: .aboveRoads)
-                //            let rect = route.polyline.boundingMapRect
-                //            self.mapView.setRegion(MKCoordinateRegionForMapRect(rect), animated: true)
             }
         }
-
-//        let center = CLLocationCoordinate2D(latitude: userLocation!.coordinate.latitude, longitude: userLocation!.coordinate.longitude)
-//        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-
     }
 }

@@ -22,6 +22,7 @@
 		FF1FBEC9206106CA00874A8D /* ProbaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */; };
 		FF8BFBE0205FE235004B9D66 /* VezetoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */; };
 		FF8BFBE4206013E6004B9D66 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF8BFBE3206013E6004B9D66 /* MapKit.framework */; };
+		FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF2B4BA207B99CD00247940 /* Driver.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbaViewController.swift; sourceTree = "<group>"; };
 		FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VezetoViewController.swift; sourceTree = "<group>"; };
 		FF8BFBE3206013E6004B9D66 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		FFF2B4BA207B99CD00247940 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */,
 				FF16521D206A400400CEB6F4 /* BusStation.swift */,
 				FF165221206AC0A100CEB6F4 /* MessageLauncherViewController.swift */,
+				FFF2B4BA207B99CD00247940 /* Driver.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				9A5B9C18204D962000D8E415 /* LogInViewController.swift in Sources */,
 				9A5B9C16204D962000D8E415 /* AppDelegate.swift in Sources */,
 				FF165222206AC0A100CEB6F4 /* MessageLauncherViewController.swift in Sources */,
+				FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */,
 				9A6570B2204DA7B0003ECB98 /* RegisterViewController.swift in Sources */,
 				FF1FBEC9206106CA00874A8D /* ProbaViewController.swift in Sources */,
 				9A61642D204E8673003FE421 /* BejelentkezettViewController.swift in Sources */,

@@ -16,16 +16,18 @@ class VezetoViewController: UIViewController {
     let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     let locationManager = CLLocationManager()   //ez adja a GPS koordinatakat
     var location: CLLocation?
+    var driver: Driver!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        //megkapjuk a jelenlevo soforrol az informaciokat
+        let driverRef = refDatabase.child("users/" + "\(Auth.auth().currentUser?.uid ?? "")")
+        driverRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            print("snapshot: \(snapshot)")
+            self.driver = Driver(snapshot: snapshot)
+            self.title = self.driver.surname
+        }, withCancel: nil)
     }
     
 
@@ -65,22 +67,6 @@ class VezetoViewController: UIViewController {
         let coordinates = ["longitude": location?.coordinate.longitude,
                            "latitude": location?.coordinate.latitude]
         coordinatesRef.setValue(coordinates)
-        
-        /*let groceryItemRef = self.ref.child(text.lowercased())
-        groceryItemRef.setValue(groceryItem.toAnyObject())
-        
-        let usersRef = refDatabase.child("users").child(uid)
-        let values = ["name": name,
-                      "surname": surname,
-                      "email": email,
-                      "password": password]/*,
-         "driver": "true"]*/
-        //usersRef.setValue(values, withCompletionBlock: { (err, refDatabase) in
-        usersRef.updateChildValues(values, withCompletionBlock: { (err, refDatabase) in
-            if err != nil {
-                print(error ?? "error a registerviewcontrollerben a register handle-nal")
-                return
-            }*/
     }
     
     func showLocationServicesDeniedAlert() {

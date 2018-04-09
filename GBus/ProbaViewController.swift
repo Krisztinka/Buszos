@@ -16,6 +16,7 @@ class ProbaViewController: UIViewController {
     var location: CLLocation?
     var annotation = MKPointAnnotation()
     var annotation2 = MKPointAnnotation()
+    @IBOutlet weak var button: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()

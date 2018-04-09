@@ -125,14 +125,13 @@ class MessageLauncherViewController: UIViewController {
     }
     
     deinit {
-        print("MessageLauncher destructor called.")
+        print("---MessageLauncher destructor called.---")
     }
     
-    func proba(time: Double) {
-        print("ideert a probahooooooooooz")
-        print("hulye: \(durationTextLabel)")
+    func timeChanged(time: Double) {
+        //print("//////////////////////ideert a probahooooooooooz")
         if let durationTextLabel = durationTextLabel {
-            durationTextLabel.text = String(time)
+            durationTextLabel.text = String(format: "%d Minutes", Int(time.rounded()))
         }
         
     }
