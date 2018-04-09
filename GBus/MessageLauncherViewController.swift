@@ -13,6 +13,9 @@ class MessageLauncherViewController: UIViewController {
     let whiteView = UIView()
     
     var durationTextLabel: UILabel?
+    var messageButton: UIButton!
+    
+    var activeDriver: String = "none"
     
     //var delegate: MessageTimeProtocol?
     
@@ -97,13 +100,15 @@ class MessageLauncherViewController: UIViewController {
         whiteView.addSubview(stationTextLabel)
         
         //let messageButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 21))
-        let messageButton = UIButton(type: .system)
+        messageButton = UIButton(type: .system)
         messageButton.frame = CGRect(x: 100, y: 100, width: 200, height: 45)
         messageButton.setTitle("Send Message", for: .normal)
         messageButton.backgroundColor = .white
         messageButton.layer.borderWidth = 1
         messageButton.layer.borderColor = UIColor.black.cgColor
-        messageButton.isEnabled = { return self.expectedTime < 3 }()
+        messageButton.isEnabled = {
+            return ((self.expectedTime < 100) && (self.activeDriver != "none"))
+        }()
         messageButton.addTarget(self, action: #selector(sendMessageButtonPushed), for: .touchUpInside)
         whiteView.addSubview(messageButton)
     }
@@ -128,12 +133,28 @@ class MessageLauncherViewController: UIViewController {
         print("---MessageLauncher destructor called.---")
     }
     
-    func timeChanged(time: Double) {
+    func timeChanged(time: Double, activeDriver: String) {
         //print("//////////////////////ideert a probahooooooooooz")
+        self.activeDriver = activeDriver
         if let durationTextLabel = durationTextLabel {
             durationTextLabel.text = String(format: "%d Minutes", Int(time.rounded()))
         }
-        
+        messageButton.isEnabled = {
+            let miez = (self.activeDriver != "none")
+            print("a masodikba az activedriver: \(self.activeDriver)")
+            print("selftime: \(self.expectedTime) es active: \(miez)")
+            return ((self.expectedTime < 100) && (self.activeDriver != "none"))
+        }()
+    }
+    
+    func driverStateChanged(driver: String) {
+        self.activeDriver = driver
+        if driver == "none" {
+            messageButton.isEnabled = false
+        }
+        else {
+            messageButton.isEnabled = true
+        }
     }
 
 }

@@ -20,6 +20,7 @@ class Driver: NSObject {
     init(snapshot: DataSnapshot) {
         key = snapshot.key
         ref = snapshot.ref
+        print("key: \(key)")
         name = (snapshot.value as! NSDictionary)["name"] as! String
         surname = (snapshot.value as! NSDictionary)["surname"] as! String
         email = (snapshot.value as! NSDictionary)["email"] as! String

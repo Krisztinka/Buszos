@@ -17,16 +17,40 @@ class VezetoViewController: UIViewController {
     let locationManager = CLLocationManager()   //ez adja a GPS koordinatakat
     var location: CLLocation?
     var driver: Driver!
+    var route: String = ""
 
+    @IBOutlet weak var buttonCJG: UIButton!
+    @IBOutlet weak var buttonGCJ: UIButton!
+    
+    @IBOutlet weak var buttonStart: UIButton!
+    @IBOutlet weak var buttonStop: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //-------------- Bus location-hoz kell -----------------
+        let authStatus = CLLocationManager.authorizationStatus()
+        if authStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+            return
+        }
+        
+        //megnezzuk ha megengedte hogy hasznaljuk a GPS-t vagy nem
+        if authStatus == .denied || authStatus == .restricted {
+            showLocationServicesDeniedAlert()
+            return
+        }
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        //-------------------------------------------------------------------
         
         //megkapjuk a jelenlevo soforrol az informaciokat
         let driverRef = refDatabase.child("users/" + "\(Auth.auth().currentUser?.uid ?? "")")
         driverRef.observeSingleEvent(of: .value, with: { (snapshot) in
             print("snapshot: \(snapshot)")
             self.driver = Driver(snapshot: snapshot)
-            self.title = self.driver.surname
+            self.navigationItem.title = self.driver.surname
         }, withCancel: nil)
     }
     
@@ -44,21 +68,7 @@ class VezetoViewController: UIViewController {
     }
     
     @IBAction func getLocation(_ sender: UIButton) {
-        let authStatus = CLLocationManager.authorizationStatus()
-        if authStatus == .notDetermined {
-            locationManager.requestWhenInUseAuthorization()
-            return
-        }
         
-        //megnezzuk ha megengedte hogy hasznaljuk a GPS-t vagy nem
-        if authStatus == .denied || authStatus == .restricted {
-            showLocationServicesDeniedAlert()
-            return
-        }
-        
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.startUpdatingLocation()
         
     }
     
@@ -88,6 +98,31 @@ class VezetoViewController: UIViewController {
             longitudeLabel.text = ""
         }
     }
+    
+    @IBAction func cjgPushed(_ sender: UIButton) {
+        route = "CJtoG"
+    }
+    
+    @IBAction func gcjPushed(_ sender: UIButton) {
+        route = "GtoCJ"
+    }
+    
+    @IBAction func startButtonPushed(_ sender: UIButton) {
+        print("start megnyomva")
+        let activeDriverRef = refDatabase.child("activeDrivers").child(route)
+        let infos = ["driver": driver.key]
+        activeDriverRef.setValue(infos)
+        locationManager.startUpdatingLocation()
+    }
+    
+    @IBAction func stopButtonPushed(_ sender: UIButton) {
+        print("stop megnyomva")
+        let activeDriverRef = refDatabase.child("activeDrivers").child(route)
+        let infos = ["driver": "none"]
+        activeDriverRef.setValue(infos)
+        locationManager.stopUpdatingLocation()
+    }
+    
 }
 
 extension VezetoViewController: CLLocationManagerDelegate {

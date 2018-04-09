@@ -31,6 +31,11 @@ class BejelentkezettViewController: UIViewController {
     var destinationPlacemark: MKPlacemark?
     weak var messageLauncherViewController: MessageLauncherViewController?
     
+    var isActiveDriverCJG: Bool = false
+    var driverCJG: String = "none"
+    var isActiveDriverGCJ: Bool = false
+    var driverGCJ: String = "none"
+    
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     
     override func viewDidLoad() {
@@ -76,6 +81,33 @@ class BejelentkezettViewController: UIViewController {
             }
         })
         
+        //nezzuk ha van active sofor vagy nincs, es ha active, akkor az amelyek kell nekunk, vagy nem
+        Database.database().reference().child("activeDrivers").child("CJtoG").observe(.childChanged) { (snapshot) in
+            if let driverId = snapshot.value as? String {
+                self.driverCJG = driverId
+                if self.driverCJG == "none" {
+                    self.isActiveDriverCJG = false
+                }
+                else {
+                    self.isActiveDriverCJG = true
+                }
+                self.checkSendMessageButtonState()
+            }
+        }
+        
+        Database.database().reference().child("activeDrivers").child("GtoCJ").observe(.childChanged) { (snapshot) in
+            if let driverId = snapshot.value as? String {
+                self.driverGCJ = driverId
+                if self.driverGCJ == "none" {
+                    self.isActiveDriverGCJ = false
+                }
+                else {
+                    self.isActiveDriverGCJ = true
+                }
+                self.checkSendMessageButtonState()
+            }
+        }
+        
         //kirajzolom a megallokat
         stations.append(BusStation(title: "Napoca", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 37.344893, longitude: -122.095438)))
         stations.append(BusStation(title: "NapocaEst", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 37.353238, longitude: -122.087930)))
@@ -108,6 +140,10 @@ class BejelentkezettViewController: UIViewController {
                                      handler: nil)
         present(alert, animated: true, completion: nil)
         alert.addAction(okAction)
+    }
+    
+    func checkSendMessageButtonState() {
+        self.messageLauncherViewController?.driverStateChanged(driver: driverCJG)
     }
     
     // MARK:- Actions
@@ -290,7 +326,8 @@ extension BejelentkezettViewController: CLLocationManagerDelegate {
                 //ha percben kulonbozik a ket ido, update-oljuk a messageLauncher-ba
                 if(Int(self.expectedTimeToStation.rounded()) != Int(expectedTime.rounded())) {
                     self.expectedTimeToStation = expectedTime
-                    self.messageLauncherViewController?.timeChanged(time: expectedTime)
+                    print("az elsobe az activeDriver: \(self.driverCJG)")
+                    self.messageLauncherViewController?.timeChanged(time: expectedTime, activeDriver: self.driverCJG)
                 }
             }
         }
