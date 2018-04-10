@@ -101,7 +101,8 @@ class RegisterViewController: UIViewController {
             
             //successfully autenticated user
             //get the Firebase database refenrence
-            let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
+            //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
+            let refDatabase = Database.database().reference()
             let usersRef = refDatabase.child("users").child(uid)
             let values = ["name": name,
                           "surname": surname,

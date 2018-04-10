@@ -36,6 +36,8 @@ class BejelentkezettViewController: UIViewController {
     var isActiveDriverGCJ: Bool = false
     var driverGCJ: String = "none"
     
+    var destinationBusStation: BusStation?
+    
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     
     override func viewDidLoad() {
@@ -143,7 +145,13 @@ class BejelentkezettViewController: UIViewController {
     }
     
     func checkSendMessageButtonState() {
-        self.messageLauncherViewController?.driverStateChanged(driver: driverCJG)
+        if destinationBusStation?.subtitle == "CJ-Gilau" {
+            self.messageLauncherViewController?.driverStateChanged(driver: driverCJG)
+        }
+        else if destinationBusStation?.subtitle == "Gilau-CJ" {
+            self.messageLauncherViewController?.driverStateChanged(driver: driverGCJ)
+        }
+        
     }
     
     // MARK:- Actions
@@ -240,6 +248,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     //amikor raklickkelek egy pin-re jelenjen meg a traseu
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("raklikkeltem")
+        destinationBusStation = BusStation(busAnnotation: view.annotation!) //ezzel tudom atadni a messageLauncher-nek hogy melyek megallo fele megy
         
         //let sourceLocation = CLLocationCoordinate2DMake(37.3542926, -122.087257)
         let sourceLocation = userLocation!.coordinate
@@ -290,7 +299,11 @@ extension BejelentkezettViewController: MKMapViewDelegate {
         print("meghivodik prepare")
         if (segue.identifier == "showMessageLauncher") {
             messageLauncherViewController = (segue.destination as! MessageLauncherViewController)
+            messageLauncherViewController?.delegate = self
             messageLauncherViewController?.expectedTime = expectedTimeToStation
+            if let destinationBusStation = destinationBusStation {
+                messageLauncherViewController?.busStation = destinationBusStation
+            }
         }
     }
 }
@@ -327,9 +340,31 @@ extension BejelentkezettViewController: CLLocationManagerDelegate {
                 if(Int(self.expectedTimeToStation.rounded()) != Int(expectedTime.rounded())) {
                     self.expectedTimeToStation = expectedTime
                     print("az elsobe az activeDriver: \(self.driverCJG)")
-                    self.messageLauncherViewController?.timeChanged(time: expectedTime, activeDriver: self.driverCJG)
+                    //annak fuggvenyebe hogy milyen megallot vaalsztott, megnezzuk, hogy van-e aktiv sofor vagy nincs azon az uton
+                    if self.destinationBusStation?.subtitle == "CJ-Gilau" {
+                        self.messageLauncherViewController?.timeChanged(time: expectedTime, activeDriver: self.driverCJG)
+                    }
+                    else if self.destinationBusStation?.subtitle == "Gilau-CJ" {
+                        self.messageLauncherViewController?.timeChanged(time: expectedTime, activeDriver: self.driverGCJ)
+                    }
                 }
             }
         }
     }
+}
+
+extension BejelentkezettViewController: MessageLauncherDelegate {
+    func sendMessageToDriver(driver: String) {
+        print("<<<<<<<<ezt az active driver-t kaptam \(driver)")
+        let fromId = Auth.auth().currentUser?.uid
+        let timestamp = Int(NSDate.timeIntervalSinceReferenceDate)
+        let databaseRef = Database.database().reference().child("messages")
+        let childRef = databaseRef.childByAutoId()
+        let values = ["fromId": fromId!,
+                      "toId": driver,
+                      "timestamp": timestamp] as [String : Any]
+        childRef.updateChildValues(values)
+    }
+    
+    
 }

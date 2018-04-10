@@ -52,6 +52,17 @@ class VezetoViewController: UIViewController {
             self.driver = Driver(snapshot: snapshot)
             self.navigationItem.title = self.driver.surname
         }, withCancel: nil)
+        
+        let databaseRef = Database.database().reference().child("messages")
+        databaseRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            print("initial")
+            print(snapshot)
+        }, withCancel: nil)
+        
+        databaseRef.observe(.childAdded, with: { (snapshot) in
+            print("eszrevette.")
+            print(snapshot)
+        }, withCancel: nil)
     }
     
 
@@ -132,7 +143,7 @@ extension VezetoViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let newLocation = locations.last!
-        print("didUpdateLocations \(newLocation.coordinate.latitude)")
+        //print("didUpdateLocations \(newLocation.coordinate.latitude)")
         location = newLocation
         updateLabels()
         let coordinatesRef = refDatabase.child("coordinates").child("location")

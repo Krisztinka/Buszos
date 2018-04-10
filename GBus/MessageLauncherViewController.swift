@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol MessageLauncherDelegate: class {
+    func sendMessageToDriver(driver: String)
+}
+
 class MessageLauncherViewController: UIViewController {
     let blackView = UIView()
     let whiteView = UIView()
@@ -16,6 +20,8 @@ class MessageLauncherViewController: UIViewController {
     var messageButton: UIButton!
     
     var activeDriver: String = "none"
+    var busStation = BusStation()
+    weak var delegate: MessageLauncherDelegate?
     
     //var delegate: MessageTimeProtocol?
     
@@ -95,7 +101,7 @@ class MessageLauncherViewController: UIViewController {
         whiteView.addSubview(stationLabel)
         
         let stationTextLabel = UILabel(frame: CGRect(x: 110, y: 72, width: 100, height: 21))
-        stationTextLabel.text = "Napoca"
+        stationTextLabel.text = busStation.title
         stationTextLabel.backgroundColor = UIColor.cyan
         whiteView.addSubview(stationTextLabel)
         
@@ -125,8 +131,9 @@ class MessageLauncherViewController: UIViewController {
     }
     
     @objc func sendMessageButtonPushed() {
-        print("megnyomtam")
-        durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()) + 1)
+        print("megnyomtam a send gombot!!!!!!!!!!!!!")
+        //durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()) + 1)
+        delegate?.sendMessageToDriver(driver: activeDriver)
     }
     
     deinit {
@@ -141,10 +148,11 @@ class MessageLauncherViewController: UIViewController {
         }
         messageButton.isEnabled = {
             let miez = (self.activeDriver != "none")
-            print("a masodikba az activedriver: \(self.activeDriver)")
-            print("selftime: \(self.expectedTime) es active: \(miez)")
+            //print("a masodikba az activedriver: \(self.activeDriver)")
+            //print("selftime: \(self.expectedTime) es active: \(miez)")
             return ((self.expectedTime < 100) && (self.activeDriver != "none"))
         }()
+        //print("a======= busz station \(busStation.title)")
     }
     
     func driverStateChanged(driver: String) {
@@ -152,9 +160,9 @@ class MessageLauncherViewController: UIViewController {
         if driver == "none" {
             messageButton.isEnabled = false
         }
-        else {
+        /*else {    !!!!!!!!!!!!!!!!!!!ha visszalep a sofor akkor is emg kell nezzuk az idot es enable-juk a gombot ha ez megfelelo idoben odaerne a megalloba
             messageButton.isEnabled = true
-        }
+        }*/
     }
 
 }

@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import CoreData
+import Firebase
 
 class ProbaViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
@@ -94,10 +95,26 @@ class ProbaViewController: UIViewController {
         }*/
     }
     
+    var szamlalo: Int = 0
     @IBAction func showMenu(_ sender: UIButton) {
-        let messageViewController = MessageLauncherViewController()
+        /*let messageViewController = MessageLauncherViewController()
         messageViewController.modalPresentationStyle = .overCurrentContext
-        present(messageViewController, animated: true, completion: nil)
+        present(messageViewController, animated: true, completion: nil)*/
+        let timestamp = Int(NSDate.timeIntervalSinceReferenceDate)
+        let databaseRef = Database.database().reference().child("messages")
+        let childRef = databaseRef.childByAutoId()
+        var toId = " "
+        if (szamlalo % 2) == 0 {
+            toId = "RaH61EGY2rVQssCdZBfQg5kXjvy1"
+        }
+        else {
+            toId = "T86C0DxmUvdK2JW28jUpPdXqt3j1"
+        }
+        let values = ["fromId": "KlNBdP56Y9WCrImokMlV0xgLM0n1",
+                      "toId": toId,
+                      "timestamp": timestamp] as [String : Any]
+        childRef.updateChildValues(values)
+        szamlalo += 1
         
     }
     
