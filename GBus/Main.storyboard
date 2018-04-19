@@ -341,14 +341,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wQN-K6-xaf">
-                                <rect key="frame" x="142" y="424" width="36" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Send"/>
-                                <connections>
-                                    <action selector="sendCoordinates:" destination="hpe-28-nCS" eventType="touchUpInside" id="8LM-bT-JVR"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wsP-rk-03Z">
                                 <rect key="frame" x="116" y="301" width="88" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -396,6 +388,19 @@
                                     <action selector="stopButtonPushed:" destination="hpe-28-nCS" eventType="touchUpInside" id="fpw-PT-aM4"/>
                                 </connections>
                             </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="FXd-L7-YeH">
+                                <rect key="frame" x="40" y="350" width="247" height="169"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wQN-K6-xaf">
+                                <rect key="frame" x="259" y="301" width="36" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Send"/>
+                                <connections>
+                                    <action selector="sendCoordinates:" destination="hpe-28-nCS" eventType="touchUpInside" id="8LM-bT-JVR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="j0P-GZ-W3H"/>
@@ -414,6 +419,7 @@
                         <outlet property="buttonStop" destination="IdN-rW-qDl" id="mdG-af-cyB"/>
                         <outlet property="latitudeLabel" destination="DIC-0X-Rew" id="qjG-DL-zdb"/>
                         <outlet property="longitudeLabel" destination="ndl-VS-mmo" id="Rak-Es-SUw"/>
+                        <outlet property="tableView" destination="FXd-L7-YeH" id="ALw-Uo-JgA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tMX-hN-WKM" userLabel="First Responder" sceneMemberID="firstResponder"/>

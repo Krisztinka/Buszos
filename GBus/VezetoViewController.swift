@@ -25,8 +25,13 @@ class VezetoViewController: UIViewController {
     @IBOutlet weak var buttonStart: UIButton!
     @IBOutlet weak var buttonStop: UIButton!
     
+    @IBOutlet weak var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
         
         //-------------- Bus location-hoz kell -----------------
         let authStatus = CLLocationManager.authorizationStatus()
@@ -150,5 +155,21 @@ extension VezetoViewController: CLLocationManagerDelegate {
         let coordinates = ["longitude": location?.coordinate.longitude,
                            "latitude": location?.coordinate.latitude]
         coordinatesRef.setValue(coordinates)
+    }
+}
+
+extension VezetoViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "alma")
+        cell.textLabel?.text = "Hello Brigi"
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("ez: \(indexPath.row)")
     }
 }
