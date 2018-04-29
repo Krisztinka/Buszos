@@ -14,6 +14,10 @@ class LogInViewController: UIViewController {
     @IBOutlet weak var textFieldPassword: UITextField!
     @IBOutlet weak var buttonLogIn: UIButton!
     @IBOutlet weak var buttonRegister: UIButton!
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default
+    }
+    let myActivityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +46,6 @@ class LogInViewController: UIViewController {
                 })
             }
         }
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,6 +59,7 @@ class LogInViewController: UIViewController {
     }
     
     func login() {
+        showActivityIndicator()
         //bejelentkezunk a user-el, email es password segitsegevel
         Auth.auth().signIn(withEmail: textFieldUsername.text!, password: textFieldPassword.text!, completion: { (user, error) in
             if error != nil {
@@ -77,7 +81,22 @@ class LogInViewController: UIViewController {
         alert.addAction(action)
         self.present(alert, animated: true, completion: nil)
     }
-
+    
+    func showActivityIndicator() {
+        myActivityIndicator.center = view.center
+        myActivityIndicator.hidesWhenStopped = true
+        myActivityIndicator.startAnimating()
+        view.addSubview(myActivityIndicator)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowPassanger" {
+            myActivityIndicator.stopAnimating()
+        }
+        else if segue.identifier == "ShowDriver" {
+            myActivityIndicator.stopAnimating()
+        }
+    }
 
 }
 

@@ -84,7 +84,7 @@ class MessageLauncherViewController: UIViewController {
         //durationLabel.font = UIFont(name: <#T##String#>, size: 20)
         durationLabel.font = durationLabel.font.withSize(20)
         durationLabel.text = "Time till station:"
-        durationLabel.backgroundColor = UIColor.blue
+        durationLabel.backgroundColor = UIColor.white
         whiteView.addSubview(durationLabel)
         
         print("MEGHIVODOOOOOTTTTTTTTTTT")
@@ -97,18 +97,18 @@ class MessageLauncherViewController: UIViewController {
         
         let stationLabel = UILabel(frame: CGRect(x: 10, y: 72, width: 100, height: 21))
         stationLabel.text = "To station: "
-        stationLabel.backgroundColor = UIColor.red
+        stationLabel.backgroundColor = UIColor.white
         whiteView.addSubview(stationLabel)
         
         let stationTextLabel = UILabel(frame: CGRect(x: 110, y: 72, width: 100, height: 21))
         stationTextLabel.text = busStation.title
-        stationTextLabel.backgroundColor = UIColor.cyan
+        stationTextLabel.backgroundColor = UIColor.white
         whiteView.addSubview(stationTextLabel)
         
         //let messageButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 21))
         messageButton = UIButton(type: .system)
         messageButton.frame = CGRect(x: 100, y: 100, width: 200, height: 45)
-        messageButton.setTitle("Send Message", for: .normal)
+        messageButton.setTitle("Wait Me!", for: .normal)
         messageButton.backgroundColor = .white
         messageButton.layer.borderWidth = 1
         messageButton.layer.borderColor = UIColor.black.cgColor

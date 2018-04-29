@@ -10,6 +10,11 @@ import UIKit
 import Firebase
 import CoreLocation
 
+struct TableViewCellIdentifiers {
+    static let waitMessageCell = "WaitMessageCell"
+    static let noMessageCell = "NoMessageCell"
+}
+
 class VezetoViewController: UIViewController {
     @IBOutlet weak var longitudeLabel: UILabel!
     @IBOutlet weak var latitudeLabel: UILabel!
@@ -27,11 +32,14 @@ class VezetoViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    var messages: [String] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = 70
         
         //-------------- Bus location-hoz kell -----------------
         let authStatus = CLLocationManager.authorizationStatus()
@@ -68,6 +76,11 @@ class VezetoViewController: UIViewController {
             print("eszrevette.")
             print(snapshot)
         }, withCancel: nil)
+        
+        var cellNib = UINib(nibName: "WaitMessageTableViewCell", bundle: nil)
+        tableView.register(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.waitMessageCell)
+        cellNib = UINib(nibName: "NoMessageTableViewCell", bundle: nil)
+        tableView.register(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.noMessageCell)
     }
     
 
@@ -160,13 +173,24 @@ extension VezetoViewController: CLLocationManagerDelegate {
 
 extension VezetoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        if messages.count == 0 {
+            return 1
+        }
+        else {
+            return messages.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "alma")
-        cell.textLabel?.text = "Hello Brigi"
-        return cell
+        if messages.count == 0 {
+            return tableView.dequeueReusableCell(withIdentifier: TableViewCellIdentifiers.noMessageCell, for: indexPath)
+        }
+        else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellIdentifiers.waitMessageCell, for: indexPath) as! WaitMessageTableViewCell
+            cell.nameLabel.text = "Krisztina"
+            cell.stationLabel.text = messages[1]
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -52,8 +52,8 @@ class BejelentkezettViewController: UIViewController {
                 
                 //kirajzolom a regit, adom az uj coordinate-ot es animalom
                 self.mapView.addAnnotation(self.annotation)
-                let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
-                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
+                //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
                 self.latitude = dictionary["latitude"] as! Double
                 self.longitude = dictionary["longitude"] as! Double
                 UIView.animate(withDuration: 2, animations: {
@@ -80,6 +80,9 @@ class BejelentkezettViewController: UIViewController {
                 //self.mapView.addAnnotation(self.annotation)
                 //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
                 //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                
+                let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
+                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
             }
         })
         
@@ -111,9 +114,15 @@ class BejelentkezettViewController: UIViewController {
         }
         
         //kirajzolom a megallokat
-        stations.append(BusStation(title: "Napoca", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 37.344893, longitude: -122.095438)))
-        stations.append(BusStation(title: "NapocaEst", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 37.353238, longitude: -122.087930)))
-        //let stationNapocaN = BusStation(title: "Napoca", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 37.344893, longitude: -122.095438))
+        stations.append(BusStation(title: "Napoca", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 37.330284, longitude: -122.032114)))
+        stations.append(BusStation(title: "NapocaHotel", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 46.771751, longitude: 23.575963)))
+        stations.append(BusStation(title: "NapocaHotelEst", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 46.771712, longitude: 23.575944)))
+        // stationNapocaN = BusStation(title: "Napoca", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 37.344893, longitude: -122.095438))
+        //stations.append(stationNapocaN)
+        stations.append(BusStation(title: "Gilau Centru", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 46.755979, longitude: 23.386438)))
+        stations.append(BusStation(title: "Gilau Scoala Veche", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 46.755357, longitude: 23.387869)))
+        stations.append(BusStation(title: "Floresti Centru", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 46.744, longitude: 23.485079)))
+        stations.append(BusStation(title: "Floresti Farmacie", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 46.744659, longitude: 23.48634)))
             mapView.addAnnotations(stations)
         mapView.delegate = self
         
@@ -130,6 +139,7 @@ class BejelentkezettViewController: UIViewController {
         }
         
         locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
     }
@@ -298,6 +308,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("meghivodik prepare")
         if (segue.identifier == "showMessageLauncher") {
+            print("prepareba: \(expectedTimeToStation) es \(destinationBusStation)")
             messageLauncherViewController = (segue.destination as! MessageLauncherViewController)
             messageLauncherViewController?.delegate = self
             messageLauncherViewController?.expectedTime = expectedTimeToStation
@@ -337,17 +348,18 @@ extension BejelentkezettViewController: CLLocationManagerDelegate {
                 //print("----------expectedTimeUj \(Int(expectedTime.rounded()))")
                 
                 //ha percben kulonbozik a ket ido, update-oljuk a messageLauncher-ba
-                if(Int(self.expectedTimeToStation.rounded()) != Int(expectedTime.rounded())) {
+                //if(Int(self.expectedTimeToStation.rounded()) != Int(expectedTime.rounded())) {
                     self.expectedTimeToStation = expectedTime
                     print("az elsobe az activeDriver: \(self.driverCJG)")
                     //annak fuggvenyebe hogy milyen megallot vaalsztott, megnezzuk, hogy van-e aktiv sofor vagy nincs azon az uton
                     if self.destinationBusStation?.subtitle == "CJ-Gilau" {
+                        print("kuldeskor: \(expectedTime) es sofor: \(self.driverCJG)")
                         self.messageLauncherViewController?.timeChanged(time: expectedTime, activeDriver: self.driverCJG)
                     }
                     else if self.destinationBusStation?.subtitle == "Gilau-CJ" {
                         self.messageLauncherViewController?.timeChanged(time: expectedTime, activeDriver: self.driverGCJ)
                     }
-                }
+                //}
             }
         }
     }

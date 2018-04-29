@@ -22,6 +22,10 @@
 		FF1FBEC9206106CA00874A8D /* ProbaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */; };
 		FF8BFBE0205FE235004B9D66 /* VezetoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */; };
 		FF8BFBE4206013E6004B9D66 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF8BFBE3206013E6004B9D66 /* MapKit.framework */; };
+		FFBCCA592095EBF3009FC2A0 /* WaitMessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FFBCCA582095EBF3009FC2A0 /* WaitMessageTableViewCell.xib */; };
+		FFBCCA5B2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCCA5A2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift */; };
+		FFBCCA5D2095F51C009FC2A0 /* NoMessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FFBCCA5C2095F51C009FC2A0 /* NoMessageTableViewCell.xib */; };
+		FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB756C209066DF0083044E /* MyLoginPageButton.swift */; };
 		FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF2B4BA207B99CD00247940 /* Driver.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +49,10 @@
 		FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbaViewController.swift; sourceTree = "<group>"; };
 		FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VezetoViewController.swift; sourceTree = "<group>"; };
 		FF8BFBE3206013E6004B9D66 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		FFBCCA582095EBF3009FC2A0 /* WaitMessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WaitMessageTableViewCell.xib; sourceTree = "<group>"; };
+		FFBCCA5A2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitMessageTableViewCell.swift; sourceTree = "<group>"; };
+		FFBCCA5C2095F51C009FC2A0 /* NoMessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoMessageTableViewCell.xib; sourceTree = "<group>"; };
+		FFCB756C209066DF0083044E /* MyLoginPageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLoginPageButton.swift; sourceTree = "<group>"; };
 		FFF2B4BA207B99CD00247940 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +108,8 @@
 		9A5B9C14204D962000D8E415 /* GBus */ = {
 			isa = PBXGroup;
 			children = (
+				FFCB7572209072720083044E /* NIB */,
+				FFAF083A2088E9D000B76A7B /* Models */,
 				9A6570AE204DA60C003ECB98 /* IBDesignables */,
 				9A5B9C29204D97E300D8E415 /* GoogleService-Info.plist */,
 				9A5B9C15204D962000D8E415 /* AppDelegate.swift */,
@@ -112,9 +122,7 @@
 				9A61642C204E8672003FE421 /* BejelentkezettViewController.swift */,
 				FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */,
 				FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */,
-				FF16521D206A400400CEB6F4 /* BusStation.swift */,
 				FF165221206AC0A100CEB6F4 /* MessageLauncherViewController.swift */,
-				FFF2B4BA207B99CD00247940 /* Driver.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -125,6 +133,26 @@
 				9A6570AF204DA63D003ECB98 /* DesignablePopUpView.swift */,
 			);
 			path = IBDesignables;
+			sourceTree = "<group>";
+		};
+		FFAF083A2088E9D000B76A7B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FF16521D206A400400CEB6F4 /* BusStation.swift */,
+				FFF2B4BA207B99CD00247940 /* Driver.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FFCB7572209072720083044E /* NIB */ = {
+			isa = PBXGroup;
+			children = (
+				FFCB756C209066DF0083044E /* MyLoginPageButton.swift */,
+				FFBCCA582095EBF3009FC2A0 /* WaitMessageTableViewCell.xib */,
+				FFBCCA5A2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift */,
+				FFBCCA5C2095F51C009FC2A0 /* NoMessageTableViewCell.xib */,
+			);
+			path = NIB;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,8 +224,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				9A5B9C20204D962100D8E415 /* LaunchScreen.storyboard in Resources */,
+				FFBCCA592095EBF3009FC2A0 /* WaitMessageTableViewCell.xib in Resources */,
 				9A5B9C2A204D97E300D8E415 /* GoogleService-Info.plist in Resources */,
 				9A5B9C1D204D962100D8E415 /* Assets.xcassets in Resources */,
+				FFBCCA5D2095F51C009FC2A0 /* NoMessageTableViewCell.xib in Resources */,
 				9A61642F204E8FEE003FE421 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,8 +306,10 @@
 				FF165222206AC0A100CEB6F4 /* MessageLauncherViewController.swift in Sources */,
 				FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */,
 				9A6570B2204DA7B0003ECB98 /* RegisterViewController.swift in Sources */,
+				FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */,
 				FF1FBEC9206106CA00874A8D /* ProbaViewController.swift in Sources */,
 				9A61642D204E8673003FE421 /* BejelentkezettViewController.swift in Sources */,
+				FFBCCA5B2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift in Sources */,
 				FF16521E206A400400CEB6F4 /* BusStation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,7 +444,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q2QUVT4PXZ;
 				INFOPLIST_FILE = GBus/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Krisztina.GBus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -432,7 +464,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q2QUVT4PXZ;
 				INFOPLIST_FILE = GBus/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Krisztina.GBus;
 				PRODUCT_NAME = "$(TARGET_NAME)";

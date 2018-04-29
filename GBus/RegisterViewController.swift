@@ -131,11 +131,11 @@ class RegisterViewController: UIViewController {
         let action = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(action)
         self.present(alert, animated: true, completion: nil)
-        emailImage.image = UIImage(named: "Cancel")
+        emailImage.image = UIImage(named: "incorrect")
         textFieldPassword.text = ""
-        passwordImage.image = UIImage(named: "Cancel")
+        passwordImage.image = UIImage(named: "incorrect")
         textFieldPassword2.text = ""
-        password2Image.image = UIImage(named: "Cancel")
+        password2Image.image = UIImage(named: "incorrect")
     }
     
     func formIncompleteAlert() {
@@ -144,19 +144,19 @@ class RegisterViewController: UIViewController {
         alert.addAction(action)
         self.present(alert, animated: true, completion: nil)
         if textFieldName.text == "" {
-            nameImage.image = UIImage(named: "Cancel")
+            nameImage.image = UIImage(named: "incorrect")
         }
         if textFieldSurname.text == "" {
-            surnameImage.image = UIImage(named: "Cancel")
+            surnameImage.image = UIImage(named: "incorrect")
         }
         if textFieldEmail.text == "" {
-            emailImage.image = UIImage(named: "Cancel")
+            emailImage.image = UIImage(named: "incorrect")
         }
         if textFieldPassword.text == "" {
-            passwordImage.image = UIImage(named: "Cancel")
+            passwordImage.image = UIImage(named: "incorrect")
         }
         if textFieldPassword2.text == "" {
-            password2Image.image = UIImage(named: "Cancel")
+            password2Image.image = UIImage(named: "incorrect")
         }
     }
     
@@ -193,28 +193,28 @@ extension RegisterViewController: UITextFieldDelegate {
             textFieldName.resignFirstResponder()
             let answer = checkErrorNames(text: textFieldName.text!)
             nameImage.image = UIImage(named: answer)
-            if (answer == "Appointments") {
+            if (answer == "correct") {
                 textFieldSurname.becomeFirstResponder()
             }
         case textFieldSurname:
             textFieldSurname.resignFirstResponder()
             let answer = checkErrorNames(text: textFieldSurname.text!)
             surnameImage.image = UIImage(named: answer)
-            if (answer == "Appointments") {
+            if (answer == "correct") {
                 textFieldEmail.becomeFirstResponder()
             }
         case textFieldEmail:
             textFieldEmail.resignFirstResponder()
             let answer = checkErrorEmail(text: textFieldEmail.text!)
             emailImage.image = UIImage(named: answer)
-            if (answer == "Appointments") {
+            if (answer == "correct") {
                 textFieldPassword.becomeFirstResponder()
             }
         case textFieldPassword:
             textFieldPassword.resignFirstResponder()
             let answer = checkErrorPassword(text: textFieldPassword.text!)
             passwordImage.image = UIImage(named: answer)
-            if (answer == "Appointments") {
+            if (answer == "correct") {
                 textFieldPassword2.becomeFirstResponder()
             }
         case textFieldPassword2:
@@ -256,10 +256,10 @@ extension RegisterViewController: UITextFieldDelegate {
         let nameRegex = "[A-Za-z-]{2,20}"
         let nameTest = NSPredicate(format: "SELF MATCHES %@", nameRegex)
         if ( nameTest.evaluate(with: text) == true ) {
-            return "Appointments"
+            return "correct"
         }
         else {
-            return "Cancel"
+            return "incorrect"
         }
     }
     
@@ -267,10 +267,10 @@ extension RegisterViewController: UITextFieldDelegate {
         let emailRegex = "[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
         let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         if ( emailTest.evaluate(with: text) == true ) {
-            return "Appointments"
+            return "correct"
         }
         else {
-            return "Cancel"
+            return "incorrect"
         }
     }
     
@@ -278,19 +278,19 @@ extension RegisterViewController: UITextFieldDelegate {
         let passwordRegex = "[A-Za-z0-9*._-]{6,20}"
         let passwordTest = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
         if ( passwordTest.evaluate(with: text) == true ) {
-            return "Appointments"
+            return "correct"
         }
         else {
-            return "Cancel"
+            return "incorrect"
         }
     }
     
     func checkErrorPasswordMatch(text1: String, text2: String) -> String {
         if (text2 != "" && text1 == text2) {
-            return "Appointments"
+            return "correct"
         }
         else {
-            return "Cancel"
+            return "incorrect"
         }
     }
     
