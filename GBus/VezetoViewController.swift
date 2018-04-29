@@ -32,7 +32,7 @@ class VezetoViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var messages: [String] = []
+    var messages: [WaitMessage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,14 +67,18 @@ class VezetoViewController: UIViewController {
         }, withCancel: nil)
         
         let databaseRef = Database.database().reference().child("messages")
-        databaseRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            print("initial")
-            print(snapshot)
-        }, withCancel: nil)
-        
         databaseRef.observe(.childAdded, with: { (snapshot) in
             print("eszrevette.")
             print(snapshot)
+            if (snapshot.value as! NSDictionary)["toId"] as! String == self.driver.key {
+                self.messages.append(WaitMessage(snapshot: snapshot))
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+//            for m in self.messages {
+//                m.writeMessage()
+//            }
         }, withCancel: nil)
         
         var cellNib = UINib(nibName: "WaitMessageTableViewCell", bundle: nil)
@@ -187,8 +191,11 @@ extension VezetoViewController: UITableViewDelegate, UITableViewDataSource {
         }
         else {
             let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellIdentifiers.waitMessageCell, for: indexPath) as! WaitMessageTableViewCell
-            cell.nameLabel.text = "Krisztina"
-            cell.stationLabel.text = messages[1]
+            cell.delegate = self
+            cell.nameLabel.text = messages[indexPath.row].fullName
+            cell.stationLabel.text = messages[indexPath.row].station
+            cell.acceptButton.tag = indexPath.row
+            cell.declineButton.tag = indexPath.row
             return cell
         }
     }
@@ -196,4 +203,16 @@ extension VezetoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("ez: \(indexPath.row)")
     }
+}
+
+extension VezetoViewController: WaitMessageTableViewCellDelegate {
+    func acceptUserWaitMessage(row: Int) {
+        print("elfogadva a \(row) sor, amelyben \(messages[row].fullName) van")
+    }
+    
+    func declineUserWaitMessage(row: Int) {
+        print("visszautasitva a \(row) sor, amelyben \(messages[row].fullName) van")
+    }
+    
+    
 }

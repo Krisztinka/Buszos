@@ -37,11 +37,14 @@ class BejelentkezettViewController: UIViewController {
     var driverGCJ: String = "none"
     
     var destinationBusStation: BusStation?
+    var passenger: Passenger?
+    var waitMessageReference: String = "noChild"
     
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchUserData()
         
         //ez meghivodik minden egyes adatbazis rekord update-kor
         Database.database().reference().child("coordinates").observe(.childChanged, with: { snapshot in
@@ -142,6 +145,21 @@ class BejelentkezettViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
+    }
+    
+    func fetchUserData() {
+        if Auth.auth().currentUser != nil {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            
+            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                self.passenger = Passenger(snapshot: snapshot)
+                /*if let passenger = self.passenger {
+                    passenger.writeData()
+                }*/
+            }) { (error) in
+                print(error)
+            }
+        }
     }
     
     func showLocationServicesDeniedAlert() {
@@ -371,11 +389,32 @@ extension BejelentkezettViewController: MessageLauncherDelegate {
         let fromId = Auth.auth().currentUser?.uid
         let timestamp = Int(NSDate.timeIntervalSinceReferenceDate)
         let databaseRef = Database.database().reference().child("messages")
-        let childRef = databaseRef.childByAutoId()
         let values = ["fromId": fromId!,
                       "toId": driver,
-                      "timestamp": timestamp] as [String : Any]
-        childRef.updateChildValues(values)
+                      "fullName": passenger?.fullName,
+                      "timestamp": timestamp,
+                      "station": destinationBusStation!.title] as [String : Any]
+        
+        //eddig mindig megcsinaljuk, mert ha ujitani kell ha uj adatot kell bevinni, akkor is szukseges
+        //most emgnezzuk ha van olyan gyerek a "messages" faba, aminek ugyan az a key erteke, mert ha igen, csak update-oljuk az adatokat benne
+        databaseRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            if snapshot.hasChild(self.waitMessageReference) {
+                //ekkor meg nem volt elfogadva es update-olunk
+                databaseRef.child(self.waitMessageReference).setValue(values)
+            }
+            else {
+                let childRef = databaseRef.childByAutoId()
+                childRef.updateChildValues(values)
+                self.waitMessageReference = childRef.key
+            }
+        }, withCancel: nil)
+        
+        
+        //let childRef = databaseRef.childByAutoId()
+        //waitMessageReference = childRef.key
+        //print("ez a childref: \(childRef.key)")
+        
+        //childRef.updateChildValues(values)
     }
     
     
