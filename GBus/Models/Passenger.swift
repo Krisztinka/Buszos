@@ -10,6 +10,7 @@ import Foundation
 import Firebase
 
 class Passenger: NSObject {
+    let key: String
     let name: String
     let surname: String
     let email: String
@@ -17,6 +18,7 @@ class Passenger: NSObject {
     let fullName: String
     
     init(snapshot: DataSnapshot) {
+        key = snapshot.key
         name = (snapshot.value as! NSDictionary)["name"] as! String
         surname = (snapshot.value as! NSDictionary)["surname"] as! String
         email = (snapshot.value as! NSDictionary)["email"] as! String

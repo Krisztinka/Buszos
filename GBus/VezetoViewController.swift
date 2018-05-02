@@ -68,7 +68,7 @@ class VezetoViewController: UIViewController {
         
         let databaseRef = Database.database().reference().child("messages")
         databaseRef.observe(.childAdded, with: { (snapshot) in
-            print("eszrevette.")
+            print("eszrevette ami nem update.")
             print(snapshot)
             if (snapshot.value as! NSDictionary)["toId"] as! String == self.driver.key {
                 self.messages.append(WaitMessage(snapshot: snapshot))
@@ -79,6 +79,27 @@ class VezetoViewController: UIViewController {
 //            for m in self.messages {
 //                m.writeMessage()
 //            }
+        }, withCancel: nil)
+        
+        //amikor update-olja valaki a kereset, ami amr az adatbazisba van, a message listaba is kell update-oljuk, hogy cserelodjenek a feluleten is az adatok
+        databaseRef.observe(.childChanged, with: { (snapshot) in
+            print("eszrevette hogy update lett.")
+            print(snapshot)
+            if (snapshot.value as! NSDictionary)["toId"] as! String == self.driver.key {
+                var found = false
+                var iterator = 0
+                while !found && (iterator < self.messages.count) {
+                    print("")
+                    if self.messages[iterator].key == snapshot.key {
+                        self.messages[iterator] = WaitMessage(snapshot: snapshot)
+                        found = true
+                    }
+                    iterator += 1
+                }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
         }, withCancel: nil)
         
         var cellNib = UINib(nibName: "WaitMessageTableViewCell", bundle: nil)
@@ -190,10 +211,16 @@ extension VezetoViewController: UITableViewDelegate, UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: TableViewCellIdentifiers.noMessageCell, for: indexPath)
         }
         else {
+            let date = NSDate(timeIntervalSinceReferenceDate: TimeInterval(messages[indexPath.row].timestamp))
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm:ss"
+            let dateString = formatter.string(from: date as Date)
+            
             let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellIdentifiers.waitMessageCell, for: indexPath) as! WaitMessageTableViewCell
             cell.delegate = self
             cell.nameLabel.text = messages[indexPath.row].fullName
             cell.stationLabel.text = messages[indexPath.row].station
+            cell.timeLabel.text = dateString
             cell.acceptButton.tag = indexPath.row
             cell.declineButton.tag = indexPath.row
             return cell
@@ -206,13 +233,29 @@ extension VezetoViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension VezetoViewController: WaitMessageTableViewCellDelegate {
-    func acceptUserWaitMessage(row: Int) {
-        print("elfogadva a \(row) sor, amelyben \(messages[row].fullName) van")
+    func acceptDeclineUserWaitMessage(row: Int, accept: Bool) {
+        print("elfogadva: \(accept) a \(row) sor, amelyben \(messages[row].fullName) van")
+        
+        //ki kell toroljuk a "messages" objektumbol a message-t amire valaszolunk
+        let messageRef = refDatabase.child("messages")
+        messageRef.child(messages[row].key).setValue(nil)
+        
+        //beirjuk az "oldMessages" objektumba, hogy elfogadta azt a kerest, vagy nem
+        let timestamp = Int(NSDate.timeIntervalSinceReferenceDate)
+        let oldMessageRef = refDatabase.child("oldMessages")
+        let childRef = oldMessageRef.childByAutoId()
+        let values = ["fromDriver": self.driver.surname,
+                      "toId": messages[row].fromId,
+                      "timestamp": timestamp,
+                      "answer": String(accept)] as [String : Any]
+        childRef.setValue(values)
+        
+        //kitoroljuk a messages lista-bol
+        messages.remove(at: row)
+        tableView.reloadData()
+        for pers in messages {
+            pers.writeMessage()
+        }
     }
-    
-    func declineUserWaitMessage(row: Int) {
-        print("visszautasitva a \(row) sor, amelyben \(messages[row].fullName) van")
-    }
-    
     
 }

@@ -49,7 +49,7 @@ class BejelentkezettViewController: UIViewController {
         //ez meghivodik minden egyes adatbazis rekord update-kor
         Database.database().reference().child("coordinates").observe(.childChanged, with: { snapshot in
             print("nem jo be\n")
-            print("snapshot: \(snapshot.value)\n")
+            print("snapshot: \(snapshot.value ?? "semmi")\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
                 
@@ -116,6 +116,8 @@ class BejelentkezettViewController: UIViewController {
             }
         }
         
+        checkOldMessages()
+        
         //kirajzolom a megallokat
         stations.append(BusStation(title: "Napoca", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 37.330284, longitude: -122.032114)))
         stations.append(BusStation(title: "NapocaHotel", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 46.771751, longitude: 23.575963)))
@@ -145,6 +147,41 @@ class BejelentkezettViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
+    }
+    
+    func checkOldMessages() {
+        //ezzel figyeljuk, ha a sofor elfogadta vagy nem a keresunket
+        let refDatabase = Database.database().reference()
+        refDatabase.child("oldMessages").observe(.childAdded, with: { snapshot in
+            print("snapshot: \(snapshot.value ?? "semmi")\n")
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                print(dictionary)
+                
+                if (dictionary["toId"] as! String) == self.passenger?.key {
+                    //ekkor neki szolt az uj bejegyzes, es alert-el kiirjuk
+                    let message = { (dictionary["answer"] as! String) == "true" ? "The driver ACCEPTED your request!" : "The driver DECLINED your request!"}()
+                    /*var message = ""
+                    if (dictionary["answer"] as! String) == "true" {
+                        message = "The driver ACCEPTED your request!"
+                    }
+                    else {
+                        message = "The driver DECLINED your request!"
+                    }*/
+                    
+                    let alert = UIAlertController( title: "Answer",
+                                                   message: message,
+                                                   preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default,
+                                                 handler: {(alert: UIAlertAction!) in
+                                                    //miutan megmutattuk a message-t, kitoroljuk az adatbazisbol
+                                                    let oldMessageRef = refDatabase.child("oldMessages")
+                                                    oldMessageRef.child(snapshot.key).setValue(nil)
+                    })
+                    self.present(alert, animated: true, completion: nil)
+                    alert.addAction(okAction)
+                }
+            }
+        })
     }
     
     func fetchUserData() {
@@ -311,7 +348,10 @@ extension BejelentkezettViewController: MKMapViewDelegate {
             
             self.mapView.add(route.polyline, level: .aboveRoads)
             let rect = route.polyline.boundingMapRect
-            self.mapView.setRegion(MKCoordinateRegionForMapRect(rect), animated: true)
+            //let span = MKCoordinateSpanMake(0.01, 0.01)
+            //self.mapView.setRegion(MKCoordinateRegion(center: rect, span: span), animated: true)
+            mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0), animated: true)
+            //self.mapView.setRegion(MKCoordinateRegionForMapRect(rect, span: span), animated: true)
         }
     }
     
@@ -388,6 +428,7 @@ extension BejelentkezettViewController: MessageLauncherDelegate {
         print("<<<<<<<<ezt az active driver-t kaptam \(driver)")
         let fromId = Auth.auth().currentUser?.uid
         let timestamp = Int(NSDate.timeIntervalSinceReferenceDate)
+        print(timestamp)
         let databaseRef = Database.database().reference().child("messages")
         let values = ["fromId": fromId!,
                       "toId": driver,
@@ -400,7 +441,7 @@ extension BejelentkezettViewController: MessageLauncherDelegate {
         databaseRef.observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.hasChild(self.waitMessageReference) {
                 //ekkor meg nem volt elfogadva es update-olunk
-                databaseRef.child(self.waitMessageReference).setValue(values)
+                databaseRef.child(self.waitMessageReference).updateChildValues(values)
             }
             else {
                 let childRef = databaseRef.childByAutoId()

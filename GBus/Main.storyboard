@@ -372,13 +372,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zhp-Ot-jZ7">
-                                <rect key="frame" x="0.0" y="29" width="320" height="539"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zhp-Ot-jZ7">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tes-Hh-DIW">
-                                <rect key="frame" x="259" y="441" width="45" height="46"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tes-Hh-DIW">
+                                <rect key="frame" x="259" y="506" width="45" height="46"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="46" id="3pG-qr-7zX"/>
+                                    <constraint firstAttribute="width" constant="45" id="UHH-T5-CxY"/>
+                                </constraints>
                                 <state key="normal" image="location"/>
                                 <connections>
                                     <action selector="showUserPin" destination="ii5-YO-l6l" eventType="touchUpInside" id="8GA-Zp-Ope"/>
@@ -386,6 +388,14 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="zhp-Ot-jZ7" firstAttribute="leading" secondItem="NLU-s3-gus" secondAttribute="leading" id="4UJ-7w-s78"/>
+                            <constraint firstItem="zhp-Ot-jZ7" firstAttribute="top" secondItem="BCW-C5-gpP" secondAttribute="top" id="GUH-2U-hgr"/>
+                            <constraint firstItem="NLU-s3-gus" firstAttribute="trailing" secondItem="tes-Hh-DIW" secondAttribute="trailing" constant="16" id="K3l-6K-CMa"/>
+                            <constraint firstItem="zhp-Ot-jZ7" firstAttribute="trailing" secondItem="NLU-s3-gus" secondAttribute="trailing" id="T8f-3Z-tqe"/>
+                            <constraint firstItem="zhp-Ot-jZ7" firstAttribute="bottom" secondItem="NLU-s3-gus" secondAttribute="bottom" id="fzl-g4-xXn"/>
+                            <constraint firstItem="NLU-s3-gus" firstAttribute="bottom" secondItem="tes-Hh-DIW" secondAttribute="bottom" constant="16" id="vm8-J6-Ugk"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="NLU-s3-gus"/>
                     </view>
                     <navigationItem key="navigationItem" title="Passenger" id="c9J-Rp-aEV">

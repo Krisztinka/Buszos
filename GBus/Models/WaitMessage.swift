@@ -10,6 +10,7 @@ import Foundation
 import Firebase
 
 class WaitMessage: NSObject {
+    let key: String
     let fromId: String
     let toId: String
     let timestamp: Int
@@ -17,6 +18,7 @@ class WaitMessage: NSObject {
     let fullName: String
     
     init(snapshot: DataSnapshot) {
+        key = snapshot.key
         fromId = (snapshot.value as! NSDictionary)["fromId"] as! String
         toId = (snapshot.value as! NSDictionary)["toId"] as! String
         timestamp = (snapshot.value as! NSDictionary)["timestamp"] as! Int

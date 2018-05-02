@@ -9,14 +9,14 @@
 import UIKit
 
 protocol WaitMessageTableViewCellDelegate: class {
-    func acceptUserWaitMessage(row: Int)
-    func declineUserWaitMessage(row: Int)
+    func acceptDeclineUserWaitMessage(row: Int, accept: Bool)
 }
 
 class WaitMessageTableViewCell: UITableViewCell {
-    @IBOutlet weak var userImageView: UIImageView!
+    //@IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var stationLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var acceptButton: UIButton!
     @IBOutlet weak var declineButton: UIButton!
     
@@ -35,12 +35,12 @@ class WaitMessageTableViewCell: UITableViewCell {
     
     @IBAction func acceptWaitMessage(_ sender: UIButton) {
         print("Ez a gomb pipa szama: \(sender.tag)")
-        delegate?.acceptUserWaitMessage(row: sender.tag)
+        delegate?.acceptDeclineUserWaitMessage(row: sender.tag, accept: true)
     }
     
     @IBAction func declineWaitMessage(_ sender: UIButton) {
         print("Ez a gomb x szama: \(sender.tag)")
-        delegate?.declineUserWaitMessage(row: sender.tag)
+        delegate?.acceptDeclineUserWaitMessage(row: sender.tag, accept: false)
     }
     
 }
