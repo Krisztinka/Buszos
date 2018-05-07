@@ -19,9 +19,8 @@ protocol MessageTimeProtocol {
 class BejelentkezettViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     var managedObjectContext: NSManagedObjectContext!
-    var latitude: Double = 0.0
-    var longitude: Double = 0.0
-    var annotation = MKPointAnnotation()
+    var annotationCJG = MKPointAnnotation()
+    var annotationGCJ = MKPointAnnotation()
     
     var stations = [BusStation]()       //a megallok listaja
     var expectedTimeToStation: Double = 0
@@ -47,26 +46,33 @@ class BejelentkezettViewController: UIViewController {
         fetchUserData()
         
         //ez meghivodik minden egyes adatbazis rekord update-kor
+        //figyeljuk a ket jaratot
         Database.database().reference().child("coordinates").observe(.childChanged, with: { snapshot in
-            print("nem jo be\n")
+            //csak akkor lesz eloszor kirajzolva a busz, mikor nekifogott mozogni
+            print("valami valtozott, es a snapshot.key: \(snapshot.key)")
             print("snapshot: \(snapshot.value ?? "semmi")\n")
+            let busId: String = snapshot.key
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
-                
-                //kirajzolom a regit, adom az uj coordinate-ot es animalom
-                self.mapView.addAnnotation(self.annotation)
-                //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
-                //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
-                self.latitude = dictionary["latitude"] as! Double
-                self.longitude = dictionary["longitude"] as! Double
-                UIView.animate(withDuration: 2, animations: {
-                    self.annotation.coordinate = CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
-                })
+                if busId == "locationCJtoG" {
+                    //ekor a Kolzsvarrol indulo jaratrol van szo
+                    self.mapView.addAnnotation(self.annotationCJG)
+                    UIView.animate(withDuration: 2, animations: {
+                        self.annotationCJG.coordinate = CLLocationCoordinate2D(latitude: dictionary["latitude"] as! Double, longitude: dictionary["longitude"] as! Double)
+                    })
+                }
+                else if busId == "locationGtoCJ" {
+                    //ekkor a Gyalubol indulo jaratrol van szo
+                    self.mapView.addAnnotation(self.annotationGCJ)
+                    UIView.animate(withDuration: 2, animations: {
+                        self.annotationGCJ.coordinate = CLLocationCoordinate2D(latitude: dictionary["latitude"] as! Double, longitude: dictionary["longitude"] as! Double)
+                    })
+                }
             }
         })
-        
-        //ez meghivodik az elejen
-        Database.database().reference().child("coordinates").child("location").observeSingleEvent(of: .value, with: { snapshot in
+       
+        //letrehozzuk az elso poziciojukat a ket busznak
+    Database.database().reference().child("coordinates").child("locationCJtoG").observeSingleEvent(of: .value, with: { snapshot in
             print("bejott masodikba\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
@@ -79,12 +85,37 @@ class BejelentkezettViewController: UIViewController {
                 var coordinateData = CLLocationCoordinate2D(latitude: latitudee, longitude: longitudee)
                 //var coordinateData = CLLocationCoordinate2D(latitude: 44.439663, longitude: 26.096306)
                 //let annotation = MKPointAnnotation()
-                self.annotation.coordinate = coordinateData
+                self.annotationCJG.coordinate = coordinateData
+                
                 //self.mapView.addAnnotation(self.annotation)
                 //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
                 //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
                 
-                let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
+                let region = MKCoordinateRegionMakeWithDistance(self.annotationCJG.coordinate, 1000, 1000)
+                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+            }
+        })
+        
+    Database.database().reference().child("coordinates").child("locationGtoCJ").observeSingleEvent(of: .value, with: { snapshot in
+            print("bejott masodikba\n")
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                print(dictionary)
+                var longitudee = dictionary["longitude"] as! Double
+                var latitudee = dictionary["latitude"] as! Double
+                //print(longitudee)
+                //print(latitudee)
+                //self.location = CLLocation(latitude: latitudee, longitude: longitudee)
+                
+                var coordinateData = CLLocationCoordinate2D(latitude: latitudee, longitude: longitudee)
+                //var coordinateData = CLLocationCoordinate2D(latitude: 44.439663, longitude: 26.096306)
+                //let annotation = MKPointAnnotation()
+                self.annotationGCJ.coordinate = coordinateData
+                
+                //self.mapView.addAnnotation(self.annotation)
+                //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
+                //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                
+                let region = MKCoordinateRegionMakeWithDistance(self.annotationGCJ.coordinate, 1000, 1000)
                 self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
             }
         })
@@ -95,6 +126,8 @@ class BejelentkezettViewController: UIViewController {
                 self.driverCJG = driverId
                 if self.driverCJG == "none" {
                     self.isActiveDriverCJG = false
+                    //amikor nincs sofor, a buszt se rajzoljuk ki a terkepre
+                    self.mapView.removeAnnotation(self.annotationCJG)
                 }
                 else {
                     self.isActiveDriverCJG = true
@@ -108,6 +141,8 @@ class BejelentkezettViewController: UIViewController {
                 self.driverGCJ = driverId
                 if self.driverGCJ == "none" {
                     self.isActiveDriverGCJ = false
+                    //amikor nincs sofor, a buszt se rajzoljuk ki a terkepre
+                    self.mapView.removeAnnotation(self.annotationGCJ)
                 }
                 else {
                     self.isActiveDriverGCJ = true
@@ -272,33 +307,46 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     
     //mapView(_:viewFor:) gets called for every annotation you add to the map
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is BusStation else {
-            //csak akkor customizaljuk az annotaciot ha ez egy megallo
-            return nil
-        }
+        //letrehozzuk az MKAnnotationView-t amit vissza kell adjunk
+        var annotationView: MKAnnotationView?
         
-        //csak akkor akarom customizalni, ha ez BusStation
-        //annotationView a kis bubble amibe megjelenik az iras
-        let identifier = "Station"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-        if annotationView == nil {
-            let pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            pinView.isEnabled = true
-            pinView.canShowCallout = true
-            pinView.animatesDrop = false
-            pinView.pinTintColor = UIColor(red: 0.3, green: 0.4, blue: 0.1, alpha: 1)
-            let rightButton = UIButton(type: .detailDisclosure)
-            pinView.rightCalloutAccessoryView = rightButton
-            annotationView = pinView
+        //ha az annotatio amire szukseg van, az BusMegallo, akkor a megfelelo kepet rajzoljuk ki
+        if annotation is BusStation {
+            //csak akkor akarom customizalni, ha ez BusStation
+            //annotationView a kis bubble amibe megjelenik az iras
+            let identifier = "Station"
+            annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if annotationView == nil {
+                let pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                pinView.image = UIImage(named: "busStation")
+                print("itt van\n")
+                pinView.isEnabled = true
+                pinView.canShowCallout = true
+                //pinView.animatesDrop = false
+                //pinView.pinTintColor = UIColor(red: 0.3, green: 0.4, blue: 0.1, alpha: 1)
+                let rightButton = UIButton(type: .detailDisclosure)
+                pinView.rightCalloutAccessoryView = rightButton
+                annotationView = pinView
+            }
+            else if let annotationView = annotationView {
+                //ha mar letre van hozva eleg, nem hozunk letre ujat, hanem felhsznaljuk a meglevoket
+                annotationView.annotation = annotation
+            }
         }
-        
-        if let annotationView = annotationView {
-            annotationView.annotation = annotation
-            //let button = annotationView.rightCalloutAccessoryView as! UIButton
-            /*if let index = locations.index(of: annotation as! BusStation) {
-                button.tag = index
-            }*/
-            //button.tag = 1
+        else if annotation is MKPointAnnotation {
+            print("bejotttttttttt")
+            //ha az illeto annotatio csak egy MKPointAnnotation, ami a buszt abrazolja, akkor a megfelelo kepet rajzoljuk ki
+            let identifier = "BusCoordinate"
+            annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if annotationView == nil {
+                let pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "nemtudom")
+                pinView.image = UIImage(named: "busCoord")
+                pinView.isEnabled = true
+                annotationView = pinView
+            }
+            else if let annotationView = annotationView {
+                annotationView.annotation = annotation
+            }
         }
         
         return annotationView
