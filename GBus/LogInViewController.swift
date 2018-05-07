@@ -22,6 +22,28 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        if CheckInternet.isConnected(){
+//            print("================conected!")
+//        }
+//        else {
+//            print("========not connected")
+//            //var isConnectedToInternet = false
+//            //while( !isConnectedToInternet ){
+//                if !CheckInternet.isConnected(){
+//                    //isConnectedToInternet = false
+//                    let alert = UIAlertController( title: "Error",
+//                                                   message: "You need to connect to the internet!",
+//                                                   preferredStyle: .alert)
+//                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//                    present(alert, animated: true, completion: nil)
+//                    alert.addAction(okAction)
+//                }
+//                //else {
+//                //    isConnectedToInternet = true
+//                //}
+//            //}
+//        }
+        
         textFieldUsername.delegate = self
         textFieldPassword.delegate = self
         
@@ -46,11 +68,6 @@ class LogInViewController: UIViewController {
                 })
             }
         }
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     @IBAction func loginClicked(_ sender: UIButton) {

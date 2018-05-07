@@ -134,6 +134,7 @@ class MessageLauncherViewController: UIViewController {
         print("megnyomtam a send gombot!!!!!!!!!!!!!")
         //durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()) + 1)
         delegate?.sendMessageToDriver(driver: activeDriver)
+        dismiss(animated: true, completion: nil)
     }
     
     deinit {

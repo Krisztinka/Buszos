@@ -44,6 +44,7 @@ class BejelentkezettViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUserData()
+        checkInternetConnection()
         
         //ez meghivodik minden egyes adatbazis rekord update-kor
         //figyeljuk a ket jaratot
@@ -73,50 +74,18 @@ class BejelentkezettViewController: UIViewController {
        
         //letrehozzuk az elso poziciojukat a ket busznak
     Database.database().reference().child("coordinates").child("locationCJtoG").observeSingleEvent(of: .value, with: { snapshot in
-            print("bejott masodikba\n")
+            print("bejott masodikba1\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
-                var longitudee = dictionary["longitude"] as! Double
-                var latitudee = dictionary["latitude"] as! Double
-                //print(longitudee)
-                //print(latitudee)
-                //self.location = CLLocation(latitude: latitudee, longitude: longitudee)
-                
-                var coordinateData = CLLocationCoordinate2D(latitude: latitudee, longitude: longitudee)
-                //var coordinateData = CLLocationCoordinate2D(latitude: 44.439663, longitude: 26.096306)
-                //let annotation = MKPointAnnotation()
-                self.annotationCJG.coordinate = coordinateData
-                
-                //self.mapView.addAnnotation(self.annotation)
-                //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
-                //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
-                
-                let region = MKCoordinateRegionMakeWithDistance(self.annotationCJG.coordinate, 1000, 1000)
-                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                self.annotationCJG.coordinate = CLLocationCoordinate2D(latitude: (dictionary["latitude"] as! Double), longitude: (dictionary["longitude"] as! Double))
             }
         })
         
     Database.database().reference().child("coordinates").child("locationGtoCJ").observeSingleEvent(of: .value, with: { snapshot in
-            print("bejott masodikba\n")
+            print("bejott masodikba2\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
-                var longitudee = dictionary["longitude"] as! Double
-                var latitudee = dictionary["latitude"] as! Double
-                //print(longitudee)
-                //print(latitudee)
-                //self.location = CLLocation(latitude: latitudee, longitude: longitudee)
-                
-                var coordinateData = CLLocationCoordinate2D(latitude: latitudee, longitude: longitudee)
-                //var coordinateData = CLLocationCoordinate2D(latitude: 44.439663, longitude: 26.096306)
-                //let annotation = MKPointAnnotation()
-                self.annotationGCJ.coordinate = coordinateData
-                
-                //self.mapView.addAnnotation(self.annotation)
-                //let region = MKCoordinateRegionMakeWithDistance(self.annotation.coordinate, 1000, 1000)
-                //self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
-                
-                let region = MKCoordinateRegionMakeWithDistance(self.annotationGCJ.coordinate, 1000, 1000)
-                self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
+                self.annotationGCJ.coordinate = CLLocationCoordinate2D(latitude: (dictionary["latitude"] as! Double), longitude: (dictionary["longitude"] as! Double))
             }
         })
         
@@ -131,6 +100,11 @@ class BejelentkezettViewController: UIViewController {
                 }
                 else {
                     self.isActiveDriverCJG = true
+                    //amikor activva valt a sofor, akkor odairanyitom a terkepet, hogy latszodjon hogy elindult a busz
+                    print(self.annotationCJG)
+                    print(self.annotationCJG.coordinate)
+                    let region = MKCoordinateRegionMakeWithDistance(self.annotationCJG.coordinate, 1000, 1000)
+                    self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
                 }
                 self.checkSendMessageButtonState()
             }
@@ -146,6 +120,9 @@ class BejelentkezettViewController: UIViewController {
                 }
                 else {
                     self.isActiveDriverGCJ = true
+                    //amikor activva valt a sofor, akkor odairanyitom a terkepet, hogy latszodjon hogy elindult a busz
+                    let region = MKCoordinateRegionMakeWithDistance(self.annotationGCJ.coordinate, 1000, 1000)
+                    self.mapView.setRegion(self.mapView.regionThatFits(region), animated: true)
                 }
                 self.checkSendMessageButtonState()
             }
@@ -163,6 +140,7 @@ class BejelentkezettViewController: UIViewController {
         stations.append(BusStation(title: "Gilau Scoala Veche", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 46.755357, longitude: 23.387869)))
         stations.append(BusStation(title: "Floresti Centru", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 46.744, longitude: 23.485079)))
         stations.append(BusStation(title: "Floresti Farmacie", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 46.744659, longitude: 23.48634)))
+        stations.append(BusStation(title: "Floresti Farmacie", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 37.331284, longitude: -122.042214)))
             mapView.addAnnotations(stations)
         mapView.delegate = self
         
@@ -182,6 +160,25 @@ class BejelentkezettViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
+    }
+    
+    func checkInternetConnection() {
+        //check for internet connection
+        var isConnectedToInternet = false
+        while( !isConnectedToInternet ){
+            if !CheckInternet.isConnected(){
+                isConnectedToInternet = false
+                let alert = UIAlertController( title: "Error",
+                                               message: "You need to connect to the internet!",
+                                               preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                self.present(alert, animated: true, completion: nil)
+                alert.addAction(okAction)
+            }
+            else {
+                isConnectedToInternet = true
+            }
+        }
     }
     
     func checkOldMessages() {
@@ -264,28 +261,6 @@ class BejelentkezettViewController: UIViewController {
             region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 1000, 1000)
         }
         mapView.setRegion(mapView.regionThatFits(region), animated: true)
-        
-//        var i = 10
-//        while i > 0 {
-//            self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-//            self.mapView.addAnnotation(self.annotation)
-//            //let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
-//            let region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 37.3542926, longitude: -122.087257), 10000, 1000)
-//            //let region = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 10000, 10000)
-//            mapView.setRegion(mapView.regionThatFits(region), animated: true)
-//            UIView.animate(withDuration: 2, animations: {
-//                
-//                //self.newPosition = CLLocationCoordinate2D(latitude: 46.749505, longitude: 23.412459)
-//                latitude = latitude + 0.001
-//                longitude = longitude + 0.001
-//                self.annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-//                i = i-1
-//                print(i)
-//            })
-//            
-//        }
-        
-
     }
 
     @IBAction func logOutClicked(_ sender: UIBarButtonItem) {
@@ -361,45 +336,52 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     //amikor raklickkelek egy pin-re jelenjen meg a traseu
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("raklikkeltem")
-        destinationBusStation = BusStation(busAnnotation: view.annotation!) //ezzel tudom atadni a messageLauncher-nek hogy melyek megallo fele megy
-        
-        //let sourceLocation = CLLocationCoordinate2DMake(37.3542926, -122.087257)
-        let sourceLocation = userLocation!.coordinate
-        let destinationLocation = view.annotation?.coordinate
-        //CLLocationCoordinate2DMake(46.749505, 23.412459)
-        
-        let sourcePin = MKPointAnnotation()
-        sourcePin.coordinate = sourceLocation
-        self.mapView.addAnnotation(sourcePin)
-        
-        let sourcePlacemark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
-        destinationPlacemark = MKPlacemark(coordinate: destinationLocation!, addressDictionary: nil)
-        
-        let directionRequest = MKDirectionsRequest()
-        directionRequest.source = MKMapItem(placemark: sourcePlacemark)
-        directionRequest.destination = MKMapItem(placemark: destinationPlacemark!)
-        directionRequest.transportType = .walking
-        
-        let directions = MKDirections(request: directionRequest)
-        directions.calculate { (response, error) in
-            guard let directionResponse = response else {
-                if let error = error {
-                    print("error van \(error)")
+        if (view.annotation as? BusStation) != nil {
+            //ez azert van ha sajat helyzetere klikkel a user, ne mutasson egy kicsi kek pontot
+            self.mapView.removeOverlays(self.mapView.overlays)
+            destinationBusStation = BusStation(busAnnotation: view.annotation!) //ezzel tudom atadni a messageLauncher-nek hogy melyek megallo fele megy
+            
+            //let sourceLocation = CLLocationCoordinate2DMake(37.3542926, -122.087257)
+            let sourceLocation = userLocation!.coordinate
+            let destinationLocation = view.annotation?.coordinate
+            //CLLocationCoordinate2DMake(46.749505, 23.412459)
+            
+            let sourcePin = MKPointAnnotation()
+            sourcePin.coordinate = sourceLocation
+            //self.mapView.addAnnotation(sourcePin)
+            
+            let sourcePlacemark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
+            destinationPlacemark = MKPlacemark(coordinate: destinationLocation!, addressDictionary: nil)
+            
+            let directionRequest = MKDirectionsRequest()
+            directionRequest.source = MKMapItem(placemark: sourcePlacemark)
+            directionRequest.destination = MKMapItem(placemark: destinationPlacemark!)
+            directionRequest.transportType = .walking
+            
+            let directions = MKDirections(request: directionRequest)
+            directions.calculate { (response, error) in
+                guard let directionResponse = response else {
+                    if let error = error {
+                        print("error van \(error)")
+                    }
+                    return
                 }
-                return
+                
+                let route = directionResponse.routes[0]
+                let expectedTime = route.expectedTravelTime / 60.0
+                self.expectedTimeToStation = expectedTime
+                print("varhato ido: \(expectedTime) perc")
+                
+                self.mapView.add(route.polyline, level: .aboveRoads)
+                let rect = route.polyline.boundingMapRect
+                //let span = MKCoordinateSpanMake(0.01, 0.01)
+                //self.mapView.setRegion(MKCoordinateRegion(center: rect, span: span), animated: true)
+                mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0), animated: true)
+                //self.mapView.setRegion(MKCoordinateRegionForMapRect(rect, span: span), animated: true)
             }
-            
-            let route = directionResponse.routes[0]
-            let expectedTime = route.expectedTravelTime / 60.0
-            self.expectedTimeToStation = expectedTime
-            print("varhato ido: \(expectedTime) perc")
-            
-            self.mapView.add(route.polyline, level: .aboveRoads)
-            let rect = route.polyline.boundingMapRect
-            //let span = MKCoordinateSpanMake(0.01, 0.01)
-            //self.mapView.setRegion(MKCoordinateRegion(center: rect, span: span), animated: true)
-            mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0), animated: true)
-            //self.mapView.setRegion(MKCoordinateRegionForMapRect(rect, span: span), animated: true)
+        }
+        else {
+            self.mapView.removeOverlays(self.mapView.overlays)
         }
     }
     
@@ -497,14 +479,5 @@ extension BejelentkezettViewController: MessageLauncherDelegate {
                 self.waitMessageReference = childRef.key
             }
         }, withCancel: nil)
-        
-        
-        //let childRef = databaseRef.childByAutoId()
-        //waitMessageReference = childRef.key
-        //print("ez a childref: \(childRef.key)")
-        
-        //childRef.updateChildValues(values)
     }
-    
-    
 }

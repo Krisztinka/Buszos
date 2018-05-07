@@ -189,7 +189,8 @@ extension VezetoViewController: CLLocationManagerDelegate {
         //print("didUpdateLocations \(newLocation.coordinate.latitude)")
         location = newLocation
         updateLabels()
-        let coordinatesRef = refDatabase.child("coordinates").child("location")
+        let coordinatesRef = (route == "CJtoG") ? refDatabase.child("coordinates").child("locationCJtoG") : refDatabase.child("coordinates").child("locationGtoCJ")
+        //let coordinatesRef = refDatabase.child("coordinates").child("location")
         let coordinates = ["longitude": location?.coordinate.longitude,
                            "latitude": location?.coordinate.latitude]
         coordinatesRef.setValue(coordinates)

@@ -28,6 +28,7 @@
 		FFBCCA5F209601A3009FC2A0 /* WaitMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCCA5E209601A3009FC2A0 /* WaitMessage.swift */; };
 		FFBCCA61209618C5009FC2A0 /* Passenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCCA60209618C5009FC2A0 /* Passenger.swift */; };
 		FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB756C209066DF0083044E /* MyLoginPageButton.swift */; };
+		FFCF31E320A0B69F0053A107 /* CheckInternet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCF31E220A0B69F0053A107 /* CheckInternet.swift */; };
 		FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF2B4BA207B99CD00247940 /* Driver.swift */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 		FFBCCA5E209601A3009FC2A0 /* WaitMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitMessage.swift; sourceTree = "<group>"; };
 		FFBCCA60209618C5009FC2A0 /* Passenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passenger.swift; sourceTree = "<group>"; };
 		FFCB756C209066DF0083044E /* MyLoginPageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLoginPageButton.swift; sourceTree = "<group>"; };
+		FFCF31E220A0B69F0053A107 /* CheckInternet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInternet.swift; sourceTree = "<group>"; };
 		FFF2B4BA207B99CD00247940 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -127,6 +129,7 @@
 				FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */,
 				FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */,
 				FF165221206AC0A100CEB6F4 /* MessageLauncherViewController.swift */,
+				FFCF31E220A0B69F0053A107 /* CheckInternet.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -309,6 +312,7 @@
 				FF8BFBE0205FE235004B9D66 /* VezetoViewController.swift in Sources */,
 				9A5B9C18204D962000D8E415 /* LogInViewController.swift in Sources */,
 				FFBCCA5F209601A3009FC2A0 /* WaitMessage.swift in Sources */,
+				FFCF31E320A0B69F0053A107 /* CheckInternet.swift in Sources */,
 				9A5B9C16204D962000D8E415 /* AppDelegate.swift in Sources */,
 				FF165222206AC0A100CEB6F4 /* MessageLauncherViewController.swift in Sources */,
 				FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */,
