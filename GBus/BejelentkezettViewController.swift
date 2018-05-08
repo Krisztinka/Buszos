@@ -38,13 +38,14 @@ class BejelentkezettViewController: UIViewController {
     var destinationBusStation: BusStation?
     var passenger: Passenger?
     var waitMessageReference: String = "noChild"
+    var titleButton: UIButton?
     
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUserData()
-        checkInternetConnection()
+        //checkInternetConnection()
         
         //ez meghivodik minden egyes adatbazis rekord update-kor
         //figyeljuk a ket jaratot
@@ -128,6 +129,14 @@ class BejelentkezettViewController: UIViewController {
             }
         }
         
+        //hozzaadunk egy button-t a nav bar title-jahoz
+        titleButton = UIButton(type: .custom)
+        //titleButton!.titleLabel?.adjustsFontSizeToFitWidth = true
+        titleButton!.setTitleColor(UIColor.black, for: .normal)
+        titleButton!.setTitle("Passenger", for: .normal)
+        titleButton!.addTarget(self, action: #selector(clickOnTitleButton), for: .touchUpInside)
+        self.navigationItem.titleView = titleButton
+        
         checkOldMessages()
         
         //kirajzolom a megallokat
@@ -160,6 +169,7 @@ class BejelentkezettViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
+        print("meghivodooooooooooooooooooooooooot")
     }
     
     func checkInternetConnection() {
@@ -180,6 +190,26 @@ class BejelentkezettViewController: UIViewController {
             }
         }
     }
+    
+    @objc func clickOnTitleButton(button: UIButton) {
+        locationManager.stopUpdatingLocation()
+//        let editProfileViewController = EditProfileTableViewController()
+//        editProfileViewController.passenger = self.passenger
+//        //self.present(editProfileViewController, animated: true, completion: nil)
+//        self.navigationController?.pushViewController(editProfileViewController, animated: true)
+        //self.navigationController?.pushViewController(editProfileViewController, animated: true)
+        //present(editProfileViewController, animated: true, completion: nil)
+        performSegue(withIdentifier: "presentEditScreen", sender: button)
+    }
+    
+//    override func performSegue(withIdentifier identifier: String, sender: Any?) {
+//        if identifier == "presentEditScreen" {
+//            let navigationController = segue
+//        }
+//        let editProfileViewController = EditProfileTableViewController()
+//        editProfileViewController.passenger = self.passenger
+//        present(editProfileViewController, animated: true, completion: nil)
+//    }
     
     func checkOldMessages() {
         //ezzel figyeljuk, ha a sofor elfogadta vagy nem a keresunket
@@ -222,9 +252,16 @@ class BejelentkezettViewController: UIViewController {
             
             Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
                 self.passenger = Passenger(snapshot: snapshot)
-                /*if let passenger = self.passenger {
-                    passenger.writeData()
-                }*/
+                if let surname = self.passenger?.surname {
+                    self.titleButton?.setTitle(surname, for: .normal)
+                    print(surname)
+                }
+                else {
+                    self.titleButton?.setTitle("Passenger", for: .normal)
+                }
+//                if let passenger = self.passenger {
+//                    passenger.writeData()
+//                }
             }) { (error) in
                 print(error)
             }
@@ -404,6 +441,13 @@ extension BejelentkezettViewController: MKMapViewDelegate {
                 messageLauncherViewController?.busStation = destinationBusStation
             }
         }
+        else if segue.identifier == "presentEditScreen" {
+            print("a presentEdit hivodik meg")
+            let navigationController = segue.destination as! UINavigationController
+            let controller = navigationController.topViewController as! EditProfileTableViewController
+            controller.delegate = self
+            controller.passenger = passenger
+        }
     }
 }
 
@@ -480,4 +524,15 @@ extension BejelentkezettViewController: MessageLauncherDelegate {
             }
         }, withCancel: nil)
     }
+}
+
+extension BejelentkezettViewController: EditProfileTableViewControllerDelegate {
+    func updateProfile(passenger: Passenger) {
+        print("meghivta delegatet")
+        self.passenger = passenger
+        titleButton?.setTitle(passenger.surname, for: .normal)
+        passenger.writeData()
+    }
+    
+    
 }

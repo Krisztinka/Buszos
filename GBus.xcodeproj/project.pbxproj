@@ -29,6 +29,7 @@
 		FFBCCA61209618C5009FC2A0 /* Passenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCCA60209618C5009FC2A0 /* Passenger.swift */; };
 		FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB756C209066DF0083044E /* MyLoginPageButton.swift */; };
 		FFCF31E320A0B69F0053A107 /* CheckInternet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCF31E220A0B69F0053A107 /* CheckInternet.swift */; };
+		FFF18A8320A1E96F005CBE05 /* EditProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF18A8220A1E96F005CBE05 /* EditProfileTableViewController.swift */; };
 		FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF2B4BA207B99CD00247940 /* Driver.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 		FFBCCA60209618C5009FC2A0 /* Passenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passenger.swift; sourceTree = "<group>"; };
 		FFCB756C209066DF0083044E /* MyLoginPageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLoginPageButton.swift; sourceTree = "<group>"; };
 		FFCF31E220A0B69F0053A107 /* CheckInternet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInternet.swift; sourceTree = "<group>"; };
+		FFF18A8220A1E96F005CBE05 /* EditProfileTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewController.swift; sourceTree = "<group>"; };
 		FFF2B4BA207B99CD00247940 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +132,7 @@
 				FF1FBEC8206106CA00874A8D /* ProbaViewController.swift */,
 				FF165221206AC0A100CEB6F4 /* MessageLauncherViewController.swift */,
 				FFCF31E220A0B69F0053A107 /* CheckInternet.swift */,
+				FFF18A8220A1E96F005CBE05 /* EditProfileTableViewController.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 				FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */,
 				FF1FBEC9206106CA00874A8D /* ProbaViewController.swift in Sources */,
 				9A61642D204E8673003FE421 /* BejelentkezettViewController.swift in Sources */,
+				FFF18A8320A1E96F005CBE05 /* EditProfileTableViewController.swift in Sources */,
 				FFBCCA5B2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift in Sources */,
 				FF16521E206A400400CEB6F4 /* BusStation.swift in Sources */,
 			);

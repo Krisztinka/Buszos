@@ -11,8 +11,8 @@ import Firebase
 
 class Passenger: NSObject {
     let key: String
-    let name: String
-    let surname: String
+    var name: String
+    var surname: String
     let email: String
     let password: String
     let fullName: String
