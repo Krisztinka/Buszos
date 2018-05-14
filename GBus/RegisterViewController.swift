@@ -81,7 +81,6 @@ class RegisterViewController: UIViewController {
             //return 1    //the form is not completed
         }
         okForm = true
-        
         Auth.auth().createUser(withEmail: email, password: password, completion: { (user: User?, error) in
             if error != nil {
                 print("\nERRORRRRRRRR\n")
@@ -253,7 +252,8 @@ extension RegisterViewController: UITextFieldDelegate {
     }
     
     func checkErrorNames(text: String) -> String {
-        let nameRegex = "[A-Za-z-]{2,20}"
+        //let nameRegex = "[A-Za-z-]{2,20}"
+        let nameRegex = "[A-Za-z]{1}[A-Za-z- ]{1,20}"
         let nameTest = NSPredicate(format: "SELF MATCHES %@", nameRegex)
         if ( nameTest.evaluate(with: text) == true ) {
             return "correct"

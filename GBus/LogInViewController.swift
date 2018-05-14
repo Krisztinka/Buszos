@@ -82,6 +82,7 @@ class LogInViewController: UIViewController {
             if error != nil {
                 print(error ?? "error a login()-nal")
                 self.inexistentUserAlert()
+                self.myActivityIndicator.stopAnimating()
                 return
             }
             print("sikeres login")
@@ -93,7 +94,7 @@ class LogInViewController: UIViewController {
     }
     
     func inexistentUserAlert() {
-        let alert = UIAlertController(title: "Error", message: "Incorrect email os password!", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Error", message: "Incorrect email or password!", preferredStyle: .alert)
         let action = UIAlertAction(title: "Try again!", style: .default, handler: nil)
         alert.addAction(action)
         self.present(alert, animated: true, completion: nil)

@@ -40,6 +40,8 @@ class BejelentkezettViewController: UIViewController {
     var waitMessageReference: String = "noChild"
     var titleButton: UIButton?
     
+    var isSwitchOn = true
+    
     //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     
     override func viewDidLoad() {
@@ -131,7 +133,7 @@ class BejelentkezettViewController: UIViewController {
         
         //hozzaadunk egy button-t a nav bar title-jahoz
         titleButton = UIButton(type: .custom)
-        //titleButton!.titleLabel?.adjustsFontSizeToFitWidth = true
+        titleButton!.titleLabel?.adjustsFontSizeToFitWidth = true
         titleButton!.setTitleColor(UIColor.black, for: .normal)
         titleButton!.setTitle("Passenger", for: .normal)
         titleButton!.addTarget(self, action: #selector(clickOnTitleButton), for: .touchUpInside)
@@ -295,12 +297,18 @@ class BejelentkezettViewController: UIViewController {
         var region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 37.3542926, longitude: -122.087257), 10000, 10000)
         if let userLocation = userLocation {
             //ha van user location azt mutatja meg
+            print("Van user Location.")
             region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 1000, 1000)
         }
         mapView.setRegion(mapView.regionThatFits(region), animated: true)
     }
 
     @IBAction func logOutClicked(_ sender: UIBarButtonItem) {
+        logout()
+    }
+    
+    func logout() {
+        print("meghivodott logout")
         do {
             try Auth.auth().signOut()
             
@@ -372,6 +380,10 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     
     //amikor raklickkelek egy pin-re jelenjen meg a traseu
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let userLocation = userLocation else {
+            showLocationAlert()
+            return
+        }
         print("raklikkeltem")
         if (view.annotation as? BusStation) != nil {
             //ez azert van ha sajat helyzetere klikkel a user, ne mutasson egy kicsi kek pontot
@@ -379,7 +391,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
             destinationBusStation = BusStation(busAnnotation: view.annotation!) //ezzel tudom atadni a messageLauncher-nek hogy melyek megallo fele megy
             
             //let sourceLocation = CLLocationCoordinate2DMake(37.3542926, -122.087257)
-            let sourceLocation = userLocation!.coordinate
+            let sourceLocation = userLocation.coordinate
             let destinationLocation = view.annotation?.coordinate
             //CLLocationCoordinate2DMake(46.749505, 23.412459)
             
@@ -422,6 +434,17 @@ extension BejelentkezettViewController: MKMapViewDelegate {
         }
     }
     
+    func showLocationAlert() {
+        let alert = UIAlertController( title: "Error",
+                                       message: "You have to enable the Location Service inside the App, to get the route to a station.",
+                                       preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { (_) in
+            self.performSegue(withIdentifier: "presentEditScreen", sender: self.titleButton)
+        }
+        alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         print("meghivodott renderer \n")
         let renderer = MKPolylineRenderer(overlay: overlay)
@@ -445,6 +468,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
             print("a presentEdit hivodik meg")
             let navigationController = segue.destination as! UINavigationController
             let controller = navigationController.topViewController as! EditProfileTableViewController
+            controller.isSwitchOn = self.isSwitchOn
             controller.delegate = self
             controller.passenger = passenger
         }
@@ -532,7 +556,34 @@ extension BejelentkezettViewController: EditProfileTableViewControllerDelegate {
         self.passenger = passenger
         titleButton?.setTitle(passenger.surname, for: .normal)
         passenger.writeData()
+        Database.database().reference().child("users").child(passenger.key).updateChildValues(["name": passenger.name, "surname": passenger.surname])
     }
     
+    func resetPassword() {
+        print("meghivodott a reset.")
+        Auth.auth().sendPasswordReset(withEmail: (passenger?.email)!){ (error) in
+            if (error != nil) {
+                print("Error a resetpasswordnal.!!!!!!!!!!!!!!!!!!!!!!!!")
+            }
+            else {
+                self.logout()
+            }
+        }
+    }
     
+    func stopLocation(value: Bool) {
+        if value == false {
+            print("Location megallt.")
+            isSwitchOn = false
+            self.mapView.showsUserLocation = false
+            self.userLocation = nil
+            locationManager.stopUpdatingLocation()
+        }
+        else {
+            print("Location elindult.")
+            isSwitchOn = true
+            self.mapView.showsUserLocation = true
+            locationManager.startUpdatingLocation()
+        }
+    }
 }

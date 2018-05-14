@@ -29,6 +29,7 @@
 		FFBCCA61209618C5009FC2A0 /* Passenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCCA60209618C5009FC2A0 /* Passenger.swift */; };
 		FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB756C209066DF0083044E /* MyLoginPageButton.swift */; };
 		FFCF31E320A0B69F0053A107 /* CheckInternet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCF31E220A0B69F0053A107 /* CheckInternet.swift */; };
+		FFD0D9B820A9995B00438EE8 /* AnnouncementTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */; };
 		FFF18A8320A1E96F005CBE05 /* EditProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF18A8220A1E96F005CBE05 /* EditProfileTableViewController.swift */; };
 		FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF2B4BA207B99CD00247940 /* Driver.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,7 @@
 		FFBCCA60209618C5009FC2A0 /* Passenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passenger.swift; sourceTree = "<group>"; };
 		FFCB756C209066DF0083044E /* MyLoginPageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLoginPageButton.swift; sourceTree = "<group>"; };
 		FFCF31E220A0B69F0053A107 /* CheckInternet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInternet.swift; sourceTree = "<group>"; };
+		FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewController.swift; sourceTree = "<group>"; };
 		FFF18A8220A1E96F005CBE05 /* EditProfileTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewController.swift; sourceTree = "<group>"; };
 		FFF2B4BA207B99CD00247940 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -133,6 +135,7 @@
 				FF165221206AC0A100CEB6F4 /* MessageLauncherViewController.swift */,
 				FFCF31E220A0B69F0053A107 /* CheckInternet.swift */,
 				FFF18A8220A1E96F005CBE05 /* EditProfileTableViewController.swift */,
+				FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				FF165222206AC0A100CEB6F4 /* MessageLauncherViewController.swift in Sources */,
 				FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */,
 				9A6570B2204DA7B0003ECB98 /* RegisterViewController.swift in Sources */,
+				FFD0D9B820A9995B00438EE8 /* AnnouncementTableViewController.swift in Sources */,
 				FFBCCA61209618C5009FC2A0 /* Passenger.swift in Sources */,
 				FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */,
 				FF1FBEC9206106CA00874A8D /* ProbaViewController.swift in Sources */,
