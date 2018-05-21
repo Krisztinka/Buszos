@@ -11,12 +11,16 @@ import Firebase
 
 class CreateAnnouncementViewController: UIViewController {
     
+    @IBOutlet weak var importantSwitch: UISwitch!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var messageTextView: UITextView!
+    
+    var stayAtTop: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        importantSwitch.isOn = false
         titleTextField.delegate = self
         //messageTextView.delegate = self
 
@@ -42,7 +46,8 @@ class CreateAnnouncementViewController: UIViewController {
             let values = ["fromId": fromId!,
                           "title": titleTextField.text,
                           "timestamp": timestamp,
-                          "message": messageTextView.text] as [String : Any]
+                          "message": messageTextView.text,
+                          "important": String(stayAtTop)] as [String : Any]
             let childRef = databaseRef.childByAutoId()
             childRef.updateChildValues(values)
         }
@@ -54,6 +59,15 @@ class CreateAnnouncementViewController: UIViewController {
         titleTextField.text = ""
         messageTextView.text = "Write your message here!"
         
+    }
+    
+    @IBAction func switchChanged(_ sender: UISwitch) {
+        stayAtTop = sender.isOn
+        print("stayAtTop: \(stayAtTop)")
+    }
+    
+    deinit {
+        print("a create announcement bezarodott±±±±±±±±±±±±±±±±±±±±±±±")
     }
 }
 

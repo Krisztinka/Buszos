@@ -166,6 +166,10 @@ class BejelentkezettViewController: UIViewController {
         print("ez elott a user location99999999999999999999999999")
     }
     
+    @IBAction func showAnnouncementsView(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "showAnnouncements", sender: self)
+    }
+    
     func checkLocationService() {
         let authStatus = CLLocationManager.authorizationStatus()
         if authStatus == .notDetermined {
@@ -333,11 +337,17 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     
     //mapView(_:viewFor:) gets called for every annotation you add to the map
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        print("--- viewFor annotation")
         //letrehozzuk az MKAnnotationView-t amit vissza kell adjunk
         var annotationView: MKAnnotationView?
         
         //ha az annotatio amire szukseg van, az BusMegallo, akkor a megfelelo kepet rajzoljuk ki
         if annotation is BusStation {
+            /*if userLocation == nil {
+                print("niiiiiiiiiiiiiiiiiiiiiiiiiiiiiil")
+                //meg nem jo
+                annotationView?.canShowCallout = false
+            }*/
             //csak akkor akarom customizalni, ha ez BusStation
             //annotationView a kis bubble amibe megjelenik az iras
             let identifier = "Station"
@@ -374,71 +384,78 @@ extension BejelentkezettViewController: MKMapViewDelegate {
                 annotationView.annotation = annotation
             }
         }
-        
         return annotationView
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        print("rugja meg a cica")
+        print("--- annotationView view")
         performSegue(withIdentifier: "showMessageLauncher", sender: self)
+        //present(MessageLauncherViewController(), animated: true, completion: nil)
         
     }
     
     //amikor raklickkelek egy pin-re jelenjen meg a traseu
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        guard let userLocation = userLocation else {
+        print("--- didSelect view")
+        /*guard let userLocation = userLocation else {
             self.mapView.removeOverlays(self.mapView.overlays)
             showLocationAlert()
             return
+        }*/
+        //megmutatjuk a megallorol az adatokat, de nem kell kirajzolni utvonalat
+        let authStatus = CLLocationManager.authorizationStatus()
+        if authStatus == .denied || authStatus == .restricted {
+            userLocation = nil
         }
-        print("raklikkeltem")
-        if (view.annotation as? BusStation) != nil {
-            //ez azert van ha sajat helyzetere klikkel a user, ne mutasson egy kicsi kek pontot
-            self.mapView.removeOverlays(self.mapView.overlays)
-            destinationBusStation = BusStation(busAnnotation: view.annotation!) //ezzel tudom atadni a messageLauncher-nek hogy melyek megallo fele megy
-            
-            //let sourceLocation = CLLocationCoordinate2DMake(37.3542926, -122.087257)
-            let sourceLocation = userLocation.coordinate
-            let destinationLocation = view.annotation?.coordinate
-            //CLLocationCoordinate2DMake(46.749505, 23.412459)
-            
-            let sourcePin = MKPointAnnotation()
-            sourcePin.coordinate = sourceLocation
-            //self.mapView.addAnnotation(sourcePin)
-            
-            let sourcePlacemark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
-            destinationPlacemark = MKPlacemark(coordinate: destinationLocation!, addressDictionary: nil)
-            
-            let directionRequest = MKDirectionsRequest()
-            directionRequest.source = MKMapItem(placemark: sourcePlacemark)
-            directionRequest.destination = MKMapItem(placemark: destinationPlacemark!)
-            directionRequest.transportType = .walking
-            
-            let directions = MKDirections(request: directionRequest)
-            directions.calculate { (response, error) in
-                guard let directionResponse = response else {
-                    if let error = error {
-                        print("error van \(error)")
+        if let userLocation = userLocation {
+            //ha van user location, kirajzol utat, ha nincs leszed a tobbi ut, es megmutatja csak a stationNevet
+            print("raklikkeltem")
+            if (view.annotation as? BusStation) != nil {
+                //ez azert van ha sajat helyzetere klikkel a user, ne mutasson egy kicsi kek pontot
+                self.mapView.removeOverlays(self.mapView.overlays)
+                destinationBusStation = BusStation(busAnnotation: view.annotation!) //ezzel tudom atadni a messageLauncher-nek hogy melyek megallo fele megy
+                
+                let sourceLocation = userLocation.coordinate
+                let destinationLocation = view.annotation?.coordinate
+                
+                let sourcePin = MKPointAnnotation()
+                sourcePin.coordinate = sourceLocation
+                
+                let sourcePlacemark = MKPlacemark(coordinate: sourceLocation, addressDictionary: nil)
+                destinationPlacemark = MKPlacemark(coordinate: destinationLocation!, addressDictionary: nil)
+                
+                let directionRequest = MKDirectionsRequest()
+                directionRequest.source = MKMapItem(placemark: sourcePlacemark)
+                directionRequest.destination = MKMapItem(placemark: destinationPlacemark!)
+                directionRequest.transportType = .walking
+                
+                let directions = MKDirections(request: directionRequest)
+                directions.calculate { (response, error) in
+                    guard let directionResponse = response else {
+                        if let error = error {
+                            print("error van \(error)")
+                        }
+                        return
                     }
-                    return
+                    
+                    let route = directionResponse.routes[0]
+                    let expectedTime = route.expectedTravelTime / 60.0
+                    self.expectedTimeToStation = expectedTime
+                    print("varhato ido: \(expectedTime) perc")
+                    
+                    self.mapView.add(route.polyline, level: .aboveRoads)
+                    let rect = route.polyline.boundingMapRect
+                    mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0), animated: true)
                 }
-                
-                let route = directionResponse.routes[0]
-                let expectedTime = route.expectedTravelTime / 60.0
-                self.expectedTimeToStation = expectedTime
-                print("varhato ido: \(expectedTime) perc")
-                
-                self.mapView.add(route.polyline, level: .aboveRoads)
-                let rect = route.polyline.boundingMapRect
-                //let span = MKCoordinateSpanMake(0.01, 0.01)
-                //self.mapView.setRegion(MKCoordinateRegion(center: rect, span: span), animated: true)
-                mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0), animated: true)
-                //self.mapView.setRegion(MKCoordinateRegionForMapRect(rect, span: span), animated: true)
+            }
+            else {
+                self.mapView.removeOverlays(self.mapView.overlays)
             }
         }
         else {
             self.mapView.removeOverlays(self.mapView.overlays)
         }
+        
     }
     
     func showLocationAlert() {
@@ -463,12 +480,20 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("meghivodik prepare")
         if (segue.identifier == "showMessageLauncher") {
-            print("prepareba: \(expectedTimeToStation) es \(destinationBusStation)")
-            messageLauncherViewController = (segue.destination as! MessageLauncherViewController)
-            messageLauncherViewController?.delegate = self
-            messageLauncherViewController?.expectedTime = expectedTimeToStation
-            if let destinationBusStation = destinationBusStation {
-                messageLauncherViewController?.busStation = destinationBusStation
+            guard let userLocation = userLocation else { return }
+            print("a showmessagelauncher elott \(userLocation)")
+            if userLocation != nil {
+                print("prepareba: \(expectedTimeToStation) es \(destinationBusStation)")
+                messageLauncherViewController = (segue.destination as! MessageLauncherViewController)
+                messageLauncherViewController?.delegate = self
+                messageLauncherViewController?.expectedTime = expectedTimeToStation
+                if let destinationBusStation = destinationBusStation {
+                    messageLauncherViewController?.busStation = destinationBusStation
+                }
+            }
+            else {
+                print("hulye vagyok;;;;;;;;")
+                
             }
         }
         else if segue.identifier == "presentEditScreen" {
@@ -478,6 +503,11 @@ extension BejelentkezettViewController: MKMapViewDelegate {
             controller.isSwitchOn = self.isSwitchOn
             controller.delegate = self
             controller.passenger = passenger
+        }
+        else if segue.identifier == "showAnnouncements" {
+            print("rendesSegue")
+            let announcementTableViewController = segue.destination as! AnnouncementTableViewController
+            announcementTableViewController.isPassenger = true
         }
     }
 }

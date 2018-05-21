@@ -15,6 +15,7 @@ class Announcement: NSObject {
     let title: String
     let message: String
     let timestamp: Int
+    let important: String
     
     init(snapshot: DataSnapshot) {
         key = snapshot.key
@@ -22,10 +23,11 @@ class Announcement: NSObject {
         title = (snapshot.value as! NSDictionary)["title"] as! String
         message = (snapshot.value as! NSDictionary)["message"] as! String
         timestamp = (snapshot.value as! NSDictionary)["timestamp"] as! Int
+        important = (snapshot.value as! NSDictionary)["important"] as! String
     }
     
     func writeMessage(){
-        print("Ez egy uzenet: \(title) szoveg: \(message) ido: \(timestamp)")
+        print("Ez egy uzenet: \(title) szoveg: \(message) ido: \(timestamp) important \(important)")
     }
     
 }

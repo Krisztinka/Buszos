@@ -16,6 +16,7 @@ class Driver: NSObject {
     let drivesFrom: String
     let key: String
     let ref: DatabaseReference?
+    let driver: String
     
     init(snapshot: DataSnapshot) {
         key = snapshot.key
@@ -25,5 +26,6 @@ class Driver: NSObject {
         surname = (snapshot.value as! NSDictionary)["surname"] as! String
         email = (snapshot.value as! NSDictionary)["email"] as! String
         drivesFrom = (snapshot.value as! NSDictionary)["from"] as! String
+        driver = (snapshot.value as! NSDictionary)["driver"] as! String
     }
 }
