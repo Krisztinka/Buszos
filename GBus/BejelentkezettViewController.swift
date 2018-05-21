@@ -155,23 +155,30 @@ class BejelentkezettViewController: UIViewController {
             mapView.addAnnotations(stations)
         mapView.delegate = self
         
-        let authStatus = CLLocationManager.authorizationStatus()
-        if authStatus == .notDetermined {
-            locationManager.requestWhenInUseAuthorization()
-            return
-        }
-        
-        //megnezzuk ha megengedte hogy hasznaljuk a GPS-t vagy nem
-        if authStatus == .denied || authStatus == .restricted {
-            showLocationServicesDeniedAlert()
-            return
-        }
+        checkLocationService()
         
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
         print("meghivodooooooooooooooooooooooooot")
+        print(userLocation)
+        print("ez elott a user location99999999999999999999999999")
+    }
+    
+    func checkLocationService() {
+        let authStatus = CLLocationManager.authorizationStatus()
+        if authStatus == .notDetermined {
+            userLocation = nil
+            locationManager.requestWhenInUseAuthorization()
+        }
+        
+        //megnezzuk ha megengedte hogy hasznaljuk a GPS-t vagy nem
+        if authStatus == .denied || authStatus == .restricted {
+            showLocationServicesDeniedAlert()
+            userLocation = nil
+            return
+        }
     }
     
     func checkInternetConnection() {
@@ -195,23 +202,8 @@ class BejelentkezettViewController: UIViewController {
     
     @objc func clickOnTitleButton(button: UIButton) {
         locationManager.stopUpdatingLocation()
-//        let editProfileViewController = EditProfileTableViewController()
-//        editProfileViewController.passenger = self.passenger
-//        //self.present(editProfileViewController, animated: true, completion: nil)
-//        self.navigationController?.pushViewController(editProfileViewController, animated: true)
-        //self.navigationController?.pushViewController(editProfileViewController, animated: true)
-        //present(editProfileViewController, animated: true, completion: nil)
         performSegue(withIdentifier: "presentEditScreen", sender: button)
     }
-    
-//    override func performSegue(withIdentifier identifier: String, sender: Any?) {
-//        if identifier == "presentEditScreen" {
-//            let navigationController = segue
-//        }
-//        let editProfileViewController = EditProfileTableViewController()
-//        editProfileViewController.passenger = self.passenger
-//        present(editProfileViewController, animated: true, completion: nil)
-//    }
     
     func checkOldMessages() {
         //ezzel figyeljuk, ha a sofor elfogadta vagy nem a keresunket
@@ -274,8 +266,20 @@ class BejelentkezettViewController: UIViewController {
         let alert = UIAlertController( title: "Location Services Disabled",
                                        message: "Please enable location services for this app in Settings.",
                                        preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default,
-                                     handler: nil)
+        let okAction = UIAlertAction(title: "OK", style: .default) { (_) in
+            //ha nincs megengedve a location, atiranyitjuk hogy engedje meg
+            if !CLLocationManager.locationServicesEnabled() {
+                if let url = URL(string: "App-Prefs:root=Privacy&path=LOCATION") {
+                    // If general location settings are disabled then open general location settings
+                    UIApplication.shared.openURL(url)
+                }
+            } else {
+                if let url = URL(string: UIApplicationOpenSettingsURLString) {
+                    // If general location settings are enabled then open location settings for the app
+                    UIApplication.shared.openURL(url)
+                }
+            }
+        }
         present(alert, animated: true, completion: nil)
         alert.addAction(okAction)
     }
@@ -292,12 +296,14 @@ class BejelentkezettViewController: UIViewController {
     
     // MARK:- Actions
     @IBAction func showUserPin() {
+        //lehet lezarta a location-t ido kozbe, ezert meg kell nezzuk ha emg van engedve
+        checkLocationService()
         //var latitude = 46.768321
         //var longitude = 23.596480
         var region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 37.3542926, longitude: -122.087257), 10000, 10000)
         if let userLocation = userLocation {
             //ha van user location azt mutatja meg
-            print("Van user Location.")
+            print("Van user Location.888888888888888888888888888888888888888")
             region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 1000, 1000)
         }
         mapView.setRegion(mapView.regionThatFits(region), animated: true)
@@ -381,6 +387,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     //amikor raklickkelek egy pin-re jelenjen meg a traseu
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let userLocation = userLocation else {
+            self.mapView.removeOverlays(self.mapView.overlays)
             showLocationAlert()
             return
         }
@@ -436,7 +443,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
     
     func showLocationAlert() {
         let alert = UIAlertController( title: "Error",
-                                       message: "You have to enable the Location Service inside the App, to get the route to a station.",
+                                       message: "You have to enable the Location Service in Settings and inside the App, to get the route to a station.",
                                        preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { (_) in
             self.performSegue(withIdentifier: "presentEditScreen", sender: self.titleButton)
@@ -478,6 +485,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
 extension BejelentkezettViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         userLocation = locations.last!
+        print("bejott a didupdatelocation-ba!!!!!!!!!!!!!!!!!!!!!!!!!")
         //print("didUpdateLocations \(userLocation!.coordinate.latitude) \(userLocation!.coordinate.longitude)")
         
         //ekkor ki kene szamitani ujbol az utat es el kene kuldeni a launcheron a label-nak, mert itt mozog a user, es o is kell lassa a valtozast
@@ -574,6 +582,7 @@ extension BejelentkezettViewController: EditProfileTableViewControllerDelegate {
     func stopLocation(value: Bool) {
         if value == false {
             print("Location megallt.")
+            mapView.removeOverlays(self.mapView.overlays)
             isSwitchOn = false
             self.mapView.showsUserLocation = false
             self.userLocation = nil

@@ -53,9 +53,15 @@ class AnnouncementTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyAnnouncementCell", for: indexPath) as! AnnouncementTableViewCell
         print(announcements[indexPath.row].writeMessage())
+        
+        let date = NSDate(timeIntervalSinceReferenceDate: TimeInterval(announcements[indexPath.row].timestamp))
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let dateString = formatter.string(from: date as Date)
+        
         cell.titleLable.text = announcements[indexPath.row].title
         cell.announcementTextView.text = announcements[indexPath.row].message
-        cell.timeLabel.text = String(announcements[indexPath.row].timestamp)
+        cell.timeLabel.text = dateString
 
         return cell
     }
