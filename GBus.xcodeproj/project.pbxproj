@@ -31,6 +31,8 @@
 		FFCF31E320A0B69F0053A107 /* CheckInternet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCF31E220A0B69F0053A107 /* CheckInternet.swift */; };
 		FFD06F5420B19F1800080CA5 /* CreateAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD06F5320B19F1800080CA5 /* CreateAnnouncementViewController.swift */; };
 		FFD0D9B820A9995B00438EE8 /* AnnouncementTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */; };
+		FFDDE72C20B5C605004591D4 /* EditAnnouncementTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDDE72B20B5C605004591D4 /* EditAnnouncementTableViewController.swift */; };
+		FFDDE72E20B5D5A9004591D4 /* HudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDDE72D20B5D5A9004591D4 /* HudView.swift */; };
 		FFE1CC9020AAAA4F00164390 /* AnnouncementTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FFE1CC8F20AAAA4F00164390 /* AnnouncementTableViewCell.xib */; };
 		FFE1CC9220AAB3D100164390 /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE1CC9120AAB3D100164390 /* AnnouncementTableViewCell.swift */; };
 		FFE1CC9420AAB57D00164390 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE1CC9320AAB57D00164390 /* Announcement.swift */; };
@@ -67,6 +69,8 @@
 		FFCF31E220A0B69F0053A107 /* CheckInternet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInternet.swift; sourceTree = "<group>"; };
 		FFD06F5320B19F1800080CA5 /* CreateAnnouncementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAnnouncementViewController.swift; sourceTree = "<group>"; };
 		FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewController.swift; sourceTree = "<group>"; };
+		FFDDE72B20B5C605004591D4 /* EditAnnouncementTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAnnouncementTableViewController.swift; sourceTree = "<group>"; };
+		FFDDE72D20B5D5A9004591D4 /* HudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HudView.swift; sourceTree = "<group>"; };
 		FFE1CC8F20AAAA4F00164390 /* AnnouncementTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnnouncementTableViewCell.xib; sourceTree = "<group>"; };
 		FFE1CC9120AAB3D100164390 /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
 		FFE1CC9320AAB57D00164390 /* Announcement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcement.swift; sourceTree = "<group>"; };
@@ -145,6 +149,8 @@
 				FFF18A8220A1E96F005CBE05 /* EditProfileTableViewController.swift */,
 				FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */,
 				FFD06F5320B19F1800080CA5 /* CreateAnnouncementViewController.swift */,
+				FFDDE72B20B5C605004591D4 /* EditAnnouncementTableViewController.swift */,
+				FFDDE72D20B5D5A9004591D4 /* HudView.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -328,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9A6570B0204DA63D003ECB98 /* DesignablePopUpView.swift in Sources */,
+				FFDDE72C20B5C605004591D4 /* EditAnnouncementTableViewController.swift in Sources */,
 				FF8BFBE0205FE235004B9D66 /* VezetoViewController.swift in Sources */,
 				FFE1CC9220AAB3D100164390 /* AnnouncementTableViewCell.swift in Sources */,
 				9A5B9C18204D962000D8E415 /* LogInViewController.swift in Sources */,
@@ -344,6 +351,7 @@
 				FF1FBEC9206106CA00874A8D /* ProbaViewController.swift in Sources */,
 				FFD06F5420B19F1800080CA5 /* CreateAnnouncementViewController.swift in Sources */,
 				9A61642D204E8673003FE421 /* BejelentkezettViewController.swift in Sources */,
+				FFDDE72E20B5D5A9004591D4 /* HudView.swift in Sources */,
 				FFF18A8320A1E96F005CBE05 /* EditProfileTableViewController.swift in Sources */,
 				FFBCCA5B2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift in Sources */,
 				FF16521E206A400400CEB6F4 /* BusStation.swift in Sources */,

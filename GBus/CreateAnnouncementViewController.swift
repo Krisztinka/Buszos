@@ -16,6 +16,7 @@ class CreateAnnouncementViewController: UIViewController {
     @IBOutlet weak var messageTextView: UITextView!
     
     var stayAtTop: Bool = false
+    var editTitle: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +24,12 @@ class CreateAnnouncementViewController: UIViewController {
         importantSwitch.isOn = false
         titleTextField.delegate = self
         //messageTextView.delegate = self
+        if let editTitle = editTitle {
+            navigationItem.title = editTitle
+        }
+        else {
+            navigationItem.title = "Compose"
+        }
 
         //hide keyboard
         let gestureRecognizer = UITapGestureRecognizer(target: self,

@@ -20,6 +20,7 @@ class AnnouncementTableViewController: UITableViewController {
         print("ispassenger: \(isPassenger) ++++++++++")
         if isPassenger == nil {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editPushed))
+            //navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "editIcon"), style: .done, target: self, action: #selector(editPushed))
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(trashPushed))
             tableView.allowsSelection = true
         }
@@ -40,13 +41,7 @@ class AnnouncementTableViewController: UITableViewController {
                 print(snapshot.value)
                 //ha megkapta a snapshot-ot, azaz ez nem null, hozzatesszuk a listahoz
                 self.announcements.append(Announcement(snapshot: snapshot))
-                self.announcements.sort { $0 < $1 }
-                self.announcements.sort(by: { (ann1, ann2) -> Bool in
-                    if (ann1.important == ann2.important) {
-                        return ann1.timestamp > ann2.timestamp
-                    }
-                    return false
-                })
+                self.sortArray()
                 /*for an in self.announcements {
                     print(an.writeMessage())
                 }*/
@@ -72,10 +67,29 @@ class AnnouncementTableViewController: UITableViewController {
                 }
             }
         }
+        
+        Database.database().reference().child("announcements").observe(.childChanged) { (snapshot) in
+            if (snapshot.value as? [String: AnyObject]) != nil {
+                let updatedAnnouncement = Announcement(snapshot: snapshot)
+                let index = self.announcements.index(where: {$0.key == updatedAnnouncement.key})
+                if let index = index {
+                    self.announcements.remove(at: index)
+                    self.announcements.append(updatedAnnouncement)
+                    self.sortArray()
+                }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
     
     @objc func editPushed() {
         print("edit volt emgnyomva")
+        if myIndexPath != nil {
+            performSegue(withIdentifier: "editFromAnnouncementsScreen", sender: self)
+            //self.present(EditAnnouncementTableViewController(), animated: true, completion: nil)
+        }
     }
     
     @objc func trashPushed() {
@@ -90,12 +104,25 @@ class AnnouncementTableViewController: UITableViewController {
             tableView.deleteRows(at: indexPaths, with: .automatic)
             
             tableView.reloadData()
+            self.myIndexPath = nil
         }
     }
     
+    func sortArray() {
+        self.announcements.sort { $0 < $1 }
+        self.announcements.sort(by: { (ann1, ann2) -> Bool in
+            if (ann1.important == ann2.important) {
+                return ann1.timestamp > ann2.timestamp
+            }
+            return false
+        })
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
+        print("de emghivodott")
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -162,6 +189,17 @@ class AnnouncementTableViewController: UITableViewController {
         return true
     }
     */
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editFromAnnouncementsScreen" {
+            print("bejottem ahova kell \(#imageLiteral(resourceName: "travel"))")
+            //let vc = EditAnnouncementTableViewController()
+            if let myIndexPath = myIndexPath {
+                let editAnnouncement = segue.destination as! EditAnnouncementTableViewController
+                editAnnouncement.activeAnnouncement = announcements[myIndexPath.row]
+            }
+        }
+    }
     
     deinit {
         print("az announcement bezarodott±±±±±±±±±±±±±±±±±±±±±±±")
