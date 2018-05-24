@@ -43,6 +43,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        saveData()
+    }
+    
+    func saveData() {
+        var activeDriverRef = Database.database().reference().child("activeDrivers").child("CJtoG")
+        let infos = ["driver": "none"]
+        activeDriverRef.setValue(infos)
+        
+        activeDriverRef = Database.database().reference().child("activeDrivers").child("GtoCJ")
+        activeDriverRef.setValue(infos)
     }
 
 

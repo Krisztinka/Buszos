@@ -19,6 +19,7 @@ class WaitMessageTableViewCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var acceptButton: UIButton!
     @IBOutlet weak var declineButton: UIButton!
+    @IBOutlet weak var buttonsView: UIView!
     
     weak var delegate: WaitMessageTableViewCellDelegate?
     

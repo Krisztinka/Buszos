@@ -15,17 +15,21 @@ struct TableViewCellIdentifiers {
     static let noMessageCell = "NoMessageCell"
 }
 
+struct busService {
+    static let fromCjtoG = "CJtoG"
+    static let fromGtoCJ = "GtoCJ"
+}
+
 class VezetoViewController: UIViewController {
-    @IBOutlet weak var longitudeLabel: UILabel!
-    @IBOutlet weak var latitudeLabel: UILabel!
     let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
     let locationManager = CLLocationManager()   //ez adja a GPS koordinatakat
     var location: CLLocation?
     var driver: Driver!
     var route: String = ""
+    let sourceLocation = ["Cluj-Napoca", "Gilau"]
 
-    @IBOutlet weak var buttonCJG: UIButton!
-    @IBOutlet weak var buttonGCJ: UIButton!
+    @IBOutlet weak var sourceLocationPicker: UIPickerView!
+    @IBOutlet weak var travelingMessageLabel: UILabel!
     
     @IBOutlet weak var buttonStart: UIButton!
     @IBOutlet weak var buttonStop: UIButton!
@@ -40,6 +44,12 @@ class VezetoViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = 70
+        
+        sourceLocationPicker.delegate = self
+        sourceLocationPicker.dataSource = self
+        
+        route = busService.fromCjtoG
+        print("1111111111111 \(route)")
         
         //-------------- Bus location-hoz kell -----------------
         let authStatus = CLLocationManager.authorizationStatus()
@@ -107,7 +117,6 @@ class VezetoViewController: UIViewController {
         cellNib = UINib(nibName: "NoMessageTableViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.noMessageCell)
     }
-    
 
     @IBAction func logOutClicked(_ sender: UIBarButtonItem) {
         do {
@@ -121,18 +130,6 @@ class VezetoViewController: UIViewController {
         }
     }
     
-    @IBAction func getLocation(_ sender: UIButton) {
-        
-        
-    }
-    
-    @IBAction func sendCoordinates(_ sender: UIButton) {
-        let coordinatesRef = refDatabase.child("coordinates").child("location")
-        let coordinates = ["longitude": location?.coordinate.longitude,
-                           "latitude": location?.coordinate.latitude]
-        coordinatesRef.setValue(coordinates)
-    }
-    
     func showLocationServicesDeniedAlert() {
         let alert = UIAlertController( title: "Location Services Disabled",
                                        message: "Please enable location services for this app in Settings.",
@@ -143,38 +140,36 @@ class VezetoViewController: UIViewController {
         alert.addAction(okAction)
     }
     
-    func updateLabels() {
-        if let location = location {
-            longitudeLabel.text = String(format: "%.8f", location.coordinate.longitude)
-            latitudeLabel.text = String(format: "%.8f", location.coordinate.latitude)
-        } else {
-            latitudeLabel.text = ""
-            longitudeLabel.text = ""
-        }
-    }
-    
-    @IBAction func cjgPushed(_ sender: UIButton) {
-        route = "CJtoG"
-    }
-    
-    @IBAction func gcjPushed(_ sender: UIButton) {
-        route = "GtoCJ"
-    }
-    
     @IBAction func startButtonPushed(_ sender: UIButton) {
         print("start megnyomva")
+        print(route)
         let activeDriverRef = refDatabase.child("activeDrivers").child(route)
         let infos = ["driver": driver.key]
         activeDriverRef.setValue(infos)
+        //nem engedjuk hogy kivalasszon mas utat, mert mar elindult
+        sourceLocationPicker.isUserInteractionEnabled = false
+        travelingMessageLabel.isHidden = false
         locationManager.startUpdatingLocation()
     }
     
     @IBAction func stopButtonPushed(_ sender: UIButton) {
         print("stop megnyomva")
+        travelingMessageLabel.isHidden = true
         let activeDriverRef = refDatabase.child("activeDrivers").child(route)
         let infos = ["driver": "none"]
         activeDriverRef.setValue(infos)
         locationManager.stopUpdatingLocation()
+        //miutan megnyomta a stop gombot mas utat is valaszthat
+        sourceLocationPicker.isUserInteractionEnabled = true
+    }
+    
+    func setActiveDriverNone() {
+        print("elert ide")
+        print(route)
+        
+        let activeDriverRef = Database.database().reference().child("activeDrivers").child(route)
+        let infos = ["driver": "none"]
+        activeDriverRef.setValue(infos)
     }
     
 }
@@ -186,11 +181,8 @@ extension VezetoViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let newLocation = locations.last!
-        //print("didUpdateLocations \(newLocation.coordinate.latitude)")
         location = newLocation
-        updateLabels()
-        let coordinatesRef = (route == "CJtoG") ? refDatabase.child("coordinates").child("locationCJtoG") : refDatabase.child("coordinates").child("locationGtoCJ")
-        //let coordinatesRef = refDatabase.child("coordinates").child("location")
+        let coordinatesRef = (route == busService.fromCjtoG) ? refDatabase.child("coordinates").child("locationCJtoG") : refDatabase.child("coordinates").child("locationGtoCJ")
         let coordinates = ["longitude": location?.coordinate.longitude,
                            "latitude": location?.coordinate.latitude]
         coordinatesRef.setValue(coordinates)
@@ -218,12 +210,17 @@ extension VezetoViewController: UITableViewDelegate, UITableViewDataSource {
             let dateString = formatter.string(from: date as Date)
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellIdentifiers.waitMessageCell, for: indexPath) as! WaitMessageTableViewCell
+            cell.backgroundColor = UIColor.white
             cell.delegate = self
             cell.nameLabel.text = messages[indexPath.row].fullName
             cell.stationLabel.text = messages[indexPath.row].station
             cell.timeLabel.text = dateString
             cell.acceptButton.tag = indexPath.row
             cell.declineButton.tag = indexPath.row
+            
+            cell.backgroundColor = (indexPath.row % 2 == 0) ? UIColor(red: 221/255, green: 255/255, blue: 244/255, alpha: 0.8) : UIColor.white
+            cell.buttonsView.backgroundColor = cell.backgroundColor
+            
             return cell
         }
     }
@@ -256,6 +253,29 @@ extension VezetoViewController: WaitMessageTableViewCellDelegate {
         tableView.reloadData()
         for pers in messages {
             pers.writeMessage()
+        }
+    }
+}
+
+extension VezetoViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return sourceLocation.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return sourceLocation[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if sourceLocation[row] == "Cluj-Napoca" {
+            route = busService.fromCjtoG
+        }
+        else {
+            route = busService.fromGtoCJ
         }
     }
     

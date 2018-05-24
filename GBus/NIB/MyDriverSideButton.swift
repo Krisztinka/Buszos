@@ -1,25 +1,23 @@
 //
-//  MyLoginPageButton.swift
+//  MyDriverSideButton.swift
 //  GBus
 //
-//  Created by Krisztina Nagy on 25/04/2018.
+//  Created by Krisztina Nagy on 24/05/2018.
 //  Copyright © 2018 Krisztina. All rights reserved.
 //
 
 import Foundation
 import UIKit
 
-class MyLoginPageButton: UIButton {
+class MyDriverSideButton: UIButton {
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        let color = UIColor.white
+        let color = UIColor.gray
         let disabledColor = color.withAlphaComponent(0.3)
         
-        self.frame.origin = CGPoint(x: (((superview?.frame.width)! / 2) - (self.frame.width / 2)), y: self.frame.origin.y)
-        
-        self.layer.cornerRadius = 10.0
+        self.layer.cornerRadius = 20.0
         self.clipsToBounds = true
         self.layer.borderWidth = 3.0
         self.layer.borderColor = color.cgColor
@@ -27,7 +25,7 @@ class MyLoginPageButton: UIButton {
         self.setTitleColor(color, for: .normal)
         self.setTitleColor(disabledColor, for: .disabled)
         self.titleLabel?.adjustsFontSizeToFitWidth = true
-        self.setTitle(self.titleLabel?.text?.capitalized, for: .normal)
+        self.setTitle(self.titleLabel?.text?.uppercased(), for: .normal)
     }
     
 }
