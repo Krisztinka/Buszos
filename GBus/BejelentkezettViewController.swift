@@ -516,7 +516,6 @@ extension BejelentkezettViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         userLocation = locations.last!
         print("bejott a didupdatelocation-ba!!!!!!!!!!!!!!!!!!!!!!!!!")
-        //print("didUpdateLocations \(userLocation!.coordinate.latitude) \(userLocation!.coordinate.longitude)")
         
         //ekkor ki kene szamitani ujbol az utat es el kene kuldeni a launcheron a label-nak, mert itt mozog a user, es o is kell lassa a valtozast
         if let destinationPlacemark = destinationPlacemark {

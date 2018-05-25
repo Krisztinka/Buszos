@@ -267,7 +267,12 @@ extension VezetoViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return sourceLocation[row]
+        if sourceLocation[row] == "Cluj-Napoca" {
+            return "Cluj-Napoca -> Gilau"
+        }
+        else {
+            return "Gilau -> Cluj-Napoca"
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

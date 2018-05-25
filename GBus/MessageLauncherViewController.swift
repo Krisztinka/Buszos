@@ -23,29 +23,15 @@ class MessageLauncherViewController: UIViewController {
     var busStation = BusStation()
     weak var delegate: MessageLauncherDelegate?
     
-    //var delegate: MessageTimeProtocol?
-    
     var expectedTime: Double = 0
-//    var expectedTime: Double = 0 {
-//        didSet {
-//            hulye()
-//            print("************The value of myProperty changed \(expectedTime)")
-//            print("ez: \(durationTextLabel)")
-//            durationTextLabel.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
-//            if let durationTextLabel = durationTextLabel {
-//                print("be kene jojjon mert mar LETEZIIIIIK")
-//                durationTextLabel.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
-//            }
-//        }
-//    }
-    
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.clear
         view.isOpaque = false
+        
+        print("active driver: \(activeDriver), busStation \(busStation), time \(expectedTime)")
         
         showMessageLauncher()
         
@@ -91,6 +77,9 @@ class MessageLauncherViewController: UIViewController {
         durationTextLabel = UILabel(frame: CGRect(x: 100, y: 41, width: 100, height: 21))
         //durationTextLabel.text = "3 Minutes"
         print("az expected time a messageba: \(expectedTime)")
+        //durationTextLabel?.font = UIFont(name: "HelveticaNeue-UltraLight", size: 20.0)
+        durationTextLabel?.font = durationTextLabel?.font.withSize(20)
+        durationTextLabel?.textColor = UIColor.red
         durationTextLabel!.text = String(format: "%d Minutes", Int(expectedTime.rounded()))
         durationTextLabel!.backgroundColor = UIColor.white
         whiteView.addSubview(durationTextLabel!)
@@ -107,8 +96,10 @@ class MessageLauncherViewController: UIViewController {
         
         //let messageButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 21))
         messageButton = UIButton(type: .system)
-        messageButton.frame = CGRect(x: 100, y: 100, width: 200, height: 45)
-        messageButton.setTitle("Wait Me!", for: .normal)
+        messageButton.frame = CGRect(x: 140, y: 100, width: 200, height: 45)
+        messageButton.setTitle("Wait For Me!", for: .normal)
+        messageButton.setTitleColor(UIColor.red, for: .normal)
+        messageButton.setTitleColor(UIColor.gray, for: .disabled)
         messageButton.backgroundColor = .white
         messageButton.layer.borderWidth = 1
         messageButton.layer.borderColor = UIColor.black.cgColor
