@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<gpx version="1.1" creator="Xcode">
+    
+    <!--
+     Provide one or more waypoints containing a latitude/longitude pair. If you provide one
+     waypoint, Xcode will simulate that specific location. If you provide multiple waypoints,
+     Xcode will simulate a route visiting each waypoint.
+     -->
+    <wpt lat="46.76756956585899" lon="23.587098762410392">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:25:39Z</time>
+    </wpt>
+    <wpt lat="46.767834122704656" lon="23.587763950246085">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:25:48Z</time>
+    </wpt>
+    <wpt lat="46.76809867825095" lon="23.58838622273754">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:25:57Z</time>
+    </wpt>
+    <wpt lat="46.768392627333995" lon="23.589083597081412">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:07Z</time>
+    </wpt>
+    <wpt lat="46.76863513411988" lon="23.58964149655651">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:15Z</time>
+    </wpt>
+    <wpt lat="46.768855593886876" lon="23.590188667195548">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:23Z</time>
+    </wpt>
+    <wpt lat="46.76902461243051" lon="23.59068219365429">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:30Z</time>
+    </wpt>
+    <wpt lat="46.76918628184551" lon="23.59113280476879">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:36Z</time>
+    </wpt>
+    <wpt lat="46.76931120787929" lon="23.591744348424186">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:44Z</time>
+    </wpt>
+    <wpt lat="46.769480224993224" lon="23.592194959538688">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:50Z</time>
+    </wpt>
+    <wpt lat="46.769612498886325" lon="23.592581197636832">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:26:55Z</time>
+    </wpt>
+    <wpt lat="46.769737423931545" lon="23.59310691060375">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:02Z</time>
+    </wpt>
+    <wpt lat="46.769855000180044" lon="23.593546792882194">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:07Z</time>
+    </wpt>
+    <wpt lat="46.77003136407149" lon="23.59416906537365">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:15Z</time>
+    </wpt>
+    <wpt lat="46.77020037892558" lon="23.594941541569938">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:25Z</time>
+    </wpt>
+    <wpt lat="46.77033999949196" lon="23.595681831258048">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:34Z</time>
+    </wpt>
+    <wpt lat="46.770619239538945" lon="23.596465036290397">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:45Z</time>
+    </wpt>
+    <wpt lat="46.770633936343415" lon="23.59661523999523">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:46Z</time>
+    </wpt>
+    <wpt lat="46.77036204481146" lon="23.596765443700065">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:51Z</time>
+    </wpt>
+    <wpt lat="46.770016667102595" lon="23.596958562749137">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:27:57Z</time>
+    </wpt>
+    <wpt lat="46.76973007540749" lon="23.59710876645397">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:28:02Z</time>
+    </wpt>
+    <wpt lat="46.76933325361987" lon="23.59735552968334">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:28:09Z</time>
+    </wpt>
+    <wpt lat="46.76898052068764" lon="23.597505733388175">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:28:15Z</time>
+    </wpt>
+    <wpt lat="46.76861354469916" lon="23.597707302180197">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:28:22Z</time>
+    </wpt>
+    <wpt lat="46.76829755066622" lon="23.59784677704897">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:28:28Z</time>
+    </wpt>
+    <wpt lat="46.76801094982391" lon="23.597986251917746">
+        <name>Cluj-Napoca</name>
+        <time>2018-05-26T06:28:33Z</time>
+    </wpt>
+    
+</gpx>

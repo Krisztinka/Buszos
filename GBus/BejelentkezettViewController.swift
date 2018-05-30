@@ -41,8 +41,7 @@ class BejelentkezettViewController: UIViewController {
     var titleButton: UIButton?
     
     var isSwitchOn = true
-    
-    //let refDatabase = Database.database().reference(fromURL: "https://gbus-8b03b.firebaseio.com/")
+    let refDatabase = Database.database().reference()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,7 +50,7 @@ class BejelentkezettViewController: UIViewController {
         
         //ez meghivodik minden egyes adatbazis rekord update-kor
         //figyeljuk a ket jaratot
-        Database.database().reference().child("coordinates").observe(.childChanged, with: { snapshot in
+        refDatabase.child("coordinates").observe(.childChanged, with: { snapshot in
             //csak akkor lesz eloszor kirajzolva a busz, mikor nekifogott mozogni
             print("valami valtozott, es a snapshot.key: \(snapshot.key)")
             print("snapshot: \(snapshot.value ?? "semmi")\n")
@@ -76,7 +75,7 @@ class BejelentkezettViewController: UIViewController {
         })
        
         //letrehozzuk az elso poziciojukat a ket busznak
-    Database.database().reference().child("coordinates").child("locationCJtoG").observeSingleEvent(of: .value, with: { snapshot in
+    refDatabase.child("coordinates").child("locationCJtoG").observeSingleEvent(of: .value, with: { snapshot in
             print("bejott masodikba1\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
@@ -84,7 +83,7 @@ class BejelentkezettViewController: UIViewController {
             }
         })
         
-    Database.database().reference().child("coordinates").child("locationGtoCJ").observeSingleEvent(of: .value, with: { snapshot in
+    refDatabase.child("coordinates").child("locationGtoCJ").observeSingleEvent(of: .value, with: { snapshot in
             print("bejott masodikba2\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 print(dictionary)
@@ -93,7 +92,7 @@ class BejelentkezettViewController: UIViewController {
         })
         
         //nezzuk ha van active sofor vagy nincs, es ha active, akkor az amelyek kell nekunk, vagy nem
-        Database.database().reference().child("activeDrivers").child("CJtoG").observe(.childChanged) { (snapshot) in
+        refDatabase.child("activeDrivers").child("CJtoG").observe(.childChanged) { (snapshot) in
             if let driverId = snapshot.value as? String {
                 self.driverCJG = driverId
                 if self.driverCJG == "none" {
@@ -113,7 +112,7 @@ class BejelentkezettViewController: UIViewController {
             }
         }
         
-        Database.database().reference().child("activeDrivers").child("GtoCJ").observe(.childChanged) { (snapshot) in
+        refDatabase.child("activeDrivers").child("GtoCJ").observe(.childChanged) { (snapshot) in
             if let driverId = snapshot.value as? String {
                 self.driverGCJ = driverId
                 if self.driverGCJ == "none" {
@@ -152,6 +151,8 @@ class BejelentkezettViewController: UIViewController {
         stations.append(BusStation(title: "Floresti Centru", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 46.744, longitude: 23.485079)))
         stations.append(BusStation(title: "Floresti Farmacie", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 46.744659, longitude: 23.48634)))
         stations.append(BusStation(title: "Floresti Farmacie", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 37.331284, longitude: -122.042214)))
+        stations.append(BusStation(title: "Universitatii", subtitle: "CJ-Gilau", coordinate: CLLocationCoordinate2D(latitude: 46.769034, longitude: 23.591056)))
+        stations.append(BusStation(title: "Mathias", subtitle: "Gilau-CJ", coordinate: CLLocationCoordinate2D(latitude: 46.769615, longitude: 23.592429)))
             mapView.addAnnotations(stations)
         mapView.delegate = self
         
@@ -161,13 +162,20 @@ class BejelentkezettViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
-        print("meghivodooooooooooooooooooooooooot")
         print(userLocation)
-        print("ez elott a user location99999999999999999999999999")
     }
     
     @IBAction func showAnnouncementsView(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "showAnnouncements", sender: self)
+    }
+    
+    func observerToSelf() {
+        refDatabase.child("users").child(passenger!.key).observe(.value) { (snapshot) in
+            if snapshot.hasChild("banned") {
+                self.showUserWasBannedAlert()
+                return
+            }
+        }
     }
     
     func checkLocationService() {
@@ -211,7 +219,6 @@ class BejelentkezettViewController: UIViewController {
     
     func checkOldMessages() {
         //ezzel figyeljuk, ha a sofor elfogadta vagy nem a keresunket
-        let refDatabase = Database.database().reference()
         refDatabase.child("oldMessages").observe(.childAdded, with: { snapshot in
             print("snapshot: \(snapshot.value ?? "semmi")\n")
             if let dictionary = snapshot.value as? [String: AnyObject] {
@@ -220,13 +227,6 @@ class BejelentkezettViewController: UIViewController {
                 if (dictionary["toId"] as! String) == self.passenger?.key {
                     //ekkor neki szolt az uj bejegyzes, es alert-el kiirjuk
                     let message = { (dictionary["answer"] as! String) == "true" ? "The driver ACCEPTED your request!" : "The driver DECLINED your request!"}()
-                    /*var message = ""
-                    if (dictionary["answer"] as! String) == "true" {
-                        message = "The driver ACCEPTED your request!"
-                    }
-                    else {
-                        message = "The driver DECLINED your request!"
-                    }*/
                     
                     let alert = UIAlertController( title: "Answer",
                                                    message: message,
@@ -234,7 +234,7 @@ class BejelentkezettViewController: UIViewController {
                     let okAction = UIAlertAction(title: "OK", style: .default,
                                                  handler: {(alert: UIAlertAction!) in
                                                     //miutan megmutattuk a message-t, kitoroljuk az adatbazisbol
-                                                    let oldMessageRef = refDatabase.child("oldMessages")
+                                                    let oldMessageRef = self.refDatabase.child("oldMessages")
                                                     oldMessageRef.child(snapshot.key).setValue(nil)
                     })
                     self.present(alert, animated: true, completion: nil)
@@ -248,18 +248,21 @@ class BejelentkezettViewController: UIViewController {
         if Auth.auth().currentUser != nil {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             
-            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            refDatabase.child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
                 self.passenger = Passenger(snapshot: snapshot)
+                if snapshot.hasChild("banned") {
+                    //a usert ban-eoltak es ki kell lepjen
+                    self.showUserWasBannedAlert()
+                    return
+                }
                 if let surname = self.passenger?.surname {
                     self.titleButton?.setTitle(surname, for: .normal)
                     print(surname)
+                    self.observerToSelf()
                 }
                 else {
                     self.titleButton?.setTitle("Passenger", for: .normal)
                 }
-//                if let passenger = self.passenger {
-//                    passenger.writeData()
-//                }
             }) { (error) in
                 print(error)
             }
@@ -285,6 +288,19 @@ class BejelentkezettViewController: UIViewController {
             }
         }
         present(alert, animated: true, completion: nil)
+        alert.addAction(okAction)
+    }
+    
+    func showUserWasBannedAlert() {
+        let alert = UIAlertController( title: "Banned",
+                                       message: "We are sorry, you were banned. You have to log out from the GBus app.",
+                                       preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Log Out", style: .destructive,
+                                     handler: {(alert: UIAlertAction!) in
+                                        //miutan megmutattuk a message-t, logOut-oljuk
+                                        self.logout()
+        })
+        self.present(alert, animated: true, completion: nil)
         alert.addAction(okAction)
     }
     
@@ -343,11 +359,6 @@ extension BejelentkezettViewController: MKMapViewDelegate {
         
         //ha az annotatio amire szukseg van, az BusMegallo, akkor a megfelelo kepet rajzoljuk ki
         if annotation is BusStation {
-            /*if userLocation == nil {
-                print("niiiiiiiiiiiiiiiiiiiiiiiiiiiiiil")
-                //meg nem jo
-                annotationView?.canShowCallout = false
-            }*/
             //csak akkor akarom customizalni, ha ez BusStation
             //annotationView a kis bubble amibe megjelenik az iras
             let identifier = "Station"
@@ -358,8 +369,6 @@ extension BejelentkezettViewController: MKMapViewDelegate {
                 print("itt van\n")
                 pinView.isEnabled = true
                 pinView.canShowCallout = true
-                //pinView.animatesDrop = false
-                //pinView.pinTintColor = UIColor(red: 0.3, green: 0.4, blue: 0.1, alpha: 1)
                 let rightButton = UIButton(type: .detailDisclosure)
                 pinView.rightCalloutAccessoryView = rightButton
                 annotationView = pinView

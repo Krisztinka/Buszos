@@ -30,6 +30,7 @@
 		FFCF31E320A0B69F0053A107 /* CheckInternet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCF31E220A0B69F0053A107 /* CheckInternet.swift */; };
 		FFD06F5420B19F1800080CA5 /* CreateAnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD06F5320B19F1800080CA5 /* CreateAnnouncementViewController.swift */; };
 		FFD0D9B820A9995B00438EE8 /* AnnouncementTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */; };
+		FFD6EC2820BDCC7500738AC3 /* BanUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD6EC2720BDCC7500738AC3 /* BanUserViewController.swift */; };
 		FFD78F3D20B72FC8006E9E33 /* MyDriverSideButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD78F3C20B72FC8006E9E33 /* MyDriverSideButton.swift */; };
 		FFDDE72C20B5C605004591D4 /* EditAnnouncementTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDDE72B20B5C605004591D4 /* EditAnnouncementTableViewController.swift */; };
 		FFDDE72E20B5D5A9004591D4 /* HudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDDE72D20B5D5A9004591D4 /* HudView.swift */; };
@@ -57,6 +58,7 @@
 		9A6570B1204DA7B0003ECB98 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		FF16521D206A400400CEB6F4 /* BusStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStation.swift; sourceTree = "<group>"; };
 		FF165221206AC0A100CEB6F4 /* MessageLauncherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageLauncherViewController.swift; sourceTree = "<group>"; };
+		FF6E926620B91EF600AF4A56 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
 		FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VezetoViewController.swift; sourceTree = "<group>"; };
 		FF8BFBE3206013E6004B9D66 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FFBCCA582095EBF3009FC2A0 /* WaitMessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WaitMessageTableViewCell.xib; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 		FFCF31E220A0B69F0053A107 /* CheckInternet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInternet.swift; sourceTree = "<group>"; };
 		FFD06F5320B19F1800080CA5 /* CreateAnnouncementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAnnouncementViewController.swift; sourceTree = "<group>"; };
 		FFD0D9B720A9995B00438EE8 /* AnnouncementTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewController.swift; sourceTree = "<group>"; };
+		FFD6EC2720BDCC7500738AC3 /* BanUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BanUserViewController.swift; sourceTree = "<group>"; };
 		FFD78F3C20B72FC8006E9E33 /* MyDriverSideButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDriverSideButton.swift; sourceTree = "<group>"; };
 		FFDDE72B20B5C605004591D4 /* EditAnnouncementTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAnnouncementTableViewController.swift; sourceTree = "<group>"; };
 		FFDDE72D20B5D5A9004591D4 /* HudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HudView.swift; sourceTree = "<group>"; };
@@ -150,6 +153,8 @@
 				FFD06F5320B19F1800080CA5 /* CreateAnnouncementViewController.swift */,
 				FFDDE72B20B5C605004591D4 /* EditAnnouncementTableViewController.swift */,
 				FFDDE72D20B5D5A9004591D4 /* HudView.swift */,
+				FF6E926620B91EF600AF4A56 /* Location.gpx */,
+				FFD6EC2720BDCC7500738AC3 /* BanUserViewController.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -342,6 +347,7 @@
 				FFCF31E320A0B69F0053A107 /* CheckInternet.swift in Sources */,
 				9A5B9C16204D962000D8E415 /* AppDelegate.swift in Sources */,
 				FFD78F3D20B72FC8006E9E33 /* MyDriverSideButton.swift in Sources */,
+				FFD6EC2820BDCC7500738AC3 /* BanUserViewController.swift in Sources */,
 				FF165222206AC0A100CEB6F4 /* MessageLauncherViewController.swift in Sources */,
 				FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */,
 				9A6570B2204DA7B0003ECB98 /* RegisterViewController.swift in Sources */,

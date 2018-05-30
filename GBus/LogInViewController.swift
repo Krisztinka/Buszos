@@ -18,6 +18,7 @@ class LogInViewController: UIViewController {
         return .default
     }
     let myActivityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    var banned = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +73,6 @@ class LogInViewController: UIViewController {
     
     @IBAction func loginClicked(_ sender: UIButton) {
         login()
-        //dismiss(animated: true, completion: nil)
     }
     
     func login() {
@@ -85,7 +85,29 @@ class LogInViewController: UIViewController {
                 self.myActivityIndicator.stopAnimating()
                 return
             }
-            print("sikeres login")
+            if let user = user {
+                //megnezzuk ha banned vagy nem a user
+                Database.database().reference().child("users").child(user.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                    print(snapshot)
+                    if snapshot.hasChild("banned") {
+                        self.myActivityIndicator.stopAnimating()
+                        self.banned = true
+                        print("we are sorry, you are banned")
+                        do {
+                            try Auth.auth().signOut()
+                            print("kijelentkezes")
+                            self.performSegue(withIdentifier: "ShowPassanger", sender: self)
+                        }
+                        catch let loginError {
+                            print("sikertelen logout: \(loginError)\n")
+                        }
+                        return
+                    }
+                    else {
+                        print("sikeres login")
+                    }
+                })
+            }
         })
     }
     
@@ -100,6 +122,13 @@ class LogInViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    func bannedUserAlert() {
+        let alert = UIAlertController(title: "Banned", message: "We are sorry, but you are banned!", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK!", style: .default, handler: nil)
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func showActivityIndicator() {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
@@ -110,12 +139,17 @@ class LogInViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowPassanger" {
             myActivityIndicator.stopAnimating()
+            if banned {
+                dismiss(animated: true) {
+                    self.bannedUserAlert()
+                }
+                return
+            }
         }
         else if segue.identifier == "ShowDriver" {
             myActivityIndicator.stopAnimating()
         }
     }
-
 }
 
 extension LogInViewController: UITextFieldDelegate {

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:GBus/Location.gpx">
+   </FileRef>
+   <FileRef
       location = "group:GBus.xcodeproj">
    </FileRef>
    <FileRef
