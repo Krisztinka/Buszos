@@ -51,7 +51,7 @@ class CreateAnnouncementViewController: UIViewController {
             let databaseRef = Database.database().reference().child("announcements")
             let fromId = Auth.auth().currentUser?.uid
             let values = ["fromId": fromId!,
-                          "title": titleTextField.text,
+                          "title": titleTextField.text!,
                           "timestamp": timestamp,
                           "message": messageTextView.text,
                           "important": String(stayAtTop)] as [String : Any]

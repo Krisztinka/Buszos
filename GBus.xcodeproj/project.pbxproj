@@ -21,6 +21,8 @@
 		FF165222206AC0A100CEB6F4 /* MessageLauncherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF165221206AC0A100CEB6F4 /* MessageLauncherViewController.swift */; };
 		FF8BFBE0205FE235004B9D66 /* VezetoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */; };
 		FF8BFBE4206013E6004B9D66 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF8BFBE3206013E6004B9D66 /* MapKit.framework */; };
+		FF8D1BE520C67ED100445E69 /* VisualViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8D1BE420C67ED100445E69 /* VisualViewController.swift */; };
+		FF8D1BE720C6811800445E69 /* gombViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8D1BE620C6811800445E69 /* gombViewController.swift */; };
 		FFBCCA592095EBF3009FC2A0 /* WaitMessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FFBCCA582095EBF3009FC2A0 /* WaitMessageTableViewCell.xib */; };
 		FFBCCA5B2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCCA5A2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift */; };
 		FFBCCA5D2095F51C009FC2A0 /* NoMessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FFBCCA5C2095F51C009FC2A0 /* NoMessageTableViewCell.xib */; };
@@ -61,6 +63,8 @@
 		FF6E926620B91EF600AF4A56 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
 		FF8BFBDF205FE235004B9D66 /* VezetoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VezetoViewController.swift; sourceTree = "<group>"; };
 		FF8BFBE3206013E6004B9D66 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		FF8D1BE420C67ED100445E69 /* VisualViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualViewController.swift; sourceTree = "<group>"; };
+		FF8D1BE620C6811800445E69 /* gombViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gombViewController.swift; sourceTree = "<group>"; };
 		FFBCCA582095EBF3009FC2A0 /* WaitMessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WaitMessageTableViewCell.xib; sourceTree = "<group>"; };
 		FFBCCA5A2095F0AE009FC2A0 /* WaitMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitMessageTableViewCell.swift; sourceTree = "<group>"; };
 		FFBCCA5C2095F51C009FC2A0 /* NoMessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoMessageTableViewCell.xib; sourceTree = "<group>"; };
@@ -155,6 +159,8 @@
 				FFDDE72D20B5D5A9004591D4 /* HudView.swift */,
 				FF6E926620B91EF600AF4A56 /* Location.gpx */,
 				FFD6EC2720BDCC7500738AC3 /* BanUserViewController.swift */,
+				FF8D1BE420C67ED100445E69 /* VisualViewController.swift */,
+				FF8D1BE620C6811800445E69 /* gombViewController.swift */,
 			);
 			path = GBus;
 			sourceTree = "<group>";
@@ -338,6 +344,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF8D1BE520C67ED100445E69 /* VisualViewController.swift in Sources */,
 				9A6570B0204DA63D003ECB98 /* DesignablePopUpView.swift in Sources */,
 				FFDDE72C20B5C605004591D4 /* EditAnnouncementTableViewController.swift in Sources */,
 				FF8BFBE0205FE235004B9D66 /* VezetoViewController.swift in Sources */,
@@ -352,6 +359,7 @@
 				FFF2B4BB207B99CD00247940 /* Driver.swift in Sources */,
 				9A6570B2204DA7B0003ECB98 /* RegisterViewController.swift in Sources */,
 				FFD0D9B820A9995B00438EE8 /* AnnouncementTableViewController.swift in Sources */,
+				FF8D1BE720C6811800445E69 /* gombViewController.swift in Sources */,
 				FFBCCA61209618C5009FC2A0 /* Passenger.swift in Sources */,
 				FFCB756D209066DF0083044E /* MyLoginPageButton.swift in Sources */,
 				FFE1CC9420AAB57D00164390 /* Announcement.swift in Sources */,

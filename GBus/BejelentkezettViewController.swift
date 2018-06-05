@@ -454,7 +454,7 @@ extension BejelentkezettViewController: MKMapViewDelegate {
                     
                     self.mapView.add(route.polyline, level: .aboveRoads)
                     let rect = route.polyline.boundingMapRect
-                    mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsetsMake(50.0, 50.0, 50.0, 50.0), animated: true)
+                    mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsetsMake(60.0, 60.0, 60.0, 60.0), animated: true)
                 }
             }
             else {
@@ -491,19 +491,18 @@ extension BejelentkezettViewController: MKMapViewDelegate {
         if (segue.identifier == "showMessageLauncher") {
             guard let userLocation = userLocation else { return }
             print("a showmessagelauncher elott \(userLocation)")
-            if userLocation != nil {
-                print("prepareba: \(expectedTimeToStation) es \(destinationBusStation)")
+            //if userLocation != nil {
+                //print("prepareba: \(expectedTimeToStation) es \(destinationBusStation)")
                 messageLauncherViewController = (segue.destination as! MessageLauncherViewController)
                 messageLauncherViewController?.delegate = self
                 messageLauncherViewController?.expectedTime = expectedTimeToStation
                 if let destinationBusStation = destinationBusStation {
                     messageLauncherViewController?.busStation = destinationBusStation
                 }
-            }
-            else {
-                print("hulye vagyok;;;;;;;;")
-                
-            }
+            //}
+            //else {
+            //    print("hulye vagyok;;;;;;;;")
+            //}
         }
         else if segue.identifier == "presentEditScreen" {
             print("a presentEdit hivodik meg")
@@ -576,9 +575,9 @@ extension BejelentkezettViewController: MessageLauncherDelegate {
         let databaseRef = Database.database().reference().child("messages")
         let values = ["fromId": fromId!,
                       "toId": driver,
-                      "fullName": passenger?.fullName,
+                      "fullName": passenger?.fullName as Any,
                       "timestamp": timestamp,
-                      "station": destinationBusStation!.title] as [String : Any]
+                      "station": destinationBusStation!.title!] as [String : Any]
         
         //eddig mindig megcsinaljuk, mert ha ujitani kell ha uj adatot kell bevinni, akkor is szukseges
         //most emgnezzuk ha van olyan gyerek a "messages" faba, aminek ugyan az a key erteke, mert ha igen, csak update-oljuk az adatokat benne
